@@ -64,7 +64,7 @@ public class BangBangController implements UltrasonicController {
     		WallFollowingLab.rightMotor.rotate(-1080);
     		//WallFollowingLab.leftMotor.backward();
     		//WallFollowingLab.leftMotor.setSpeed(motorHigh);
-    		updateStatus("Avoiding crash", distance);
+    		updateStatus("Avoiding crash", distance,-1,-2);
   	}else if(Math.abs(distError)<=allowedDeviation) {
   		/*
   		// maintain current course
@@ -77,7 +77,7 @@ public class BangBangController implements UltrasonicController {
     		WallFollowingLab.rightMotor.setSpeed(motorHigh);
     		WallFollowingLab.leftMotor.forward();
         WallFollowingLab.rightMotor.forward();
-        updateStatus("Turn right", distance);
+        updateStatus("Turn right", distance,motorHigh,motorHigh);
     		//Printer.updateLCD("Distance; "+distance+"Turn right");
     }else if(distError >0) {
     		/*	
@@ -91,7 +91,7 @@ public class BangBangController implements UltrasonicController {
     		WallFollowingLab.rightMotor.setSpeed(motorLow);
     		WallFollowingLab.leftMotor.forward();
         WallFollowingLab.rightMotor.forward();
-        updateStatus("Turn right", distance);
+        updateStatus("Turn right", distance,motorHigh,motorLow);
     		//Printer.updateLCD("Distance; "+distance+"Move Straight");
     }else if(distError<=0){
     		/*
@@ -104,7 +104,7 @@ public class BangBangController implements UltrasonicController {
 		WallFollowingLab.rightMotor.setSpeed(motorHigh);
 		WallFollowingLab.leftMotor.forward();
 		WallFollowingLab.rightMotor.forward();
-        updateStatus("Turn left", distance);
+        updateStatus("Turn left", distance,motorLow,motorHigh);
     		//Printer.updateLCD("Distance; "+distance+"Turn Left");
     }
   }
@@ -132,10 +132,12 @@ public class BangBangController implements UltrasonicController {
   /* 
    * a class that prints to LCD
    */
-  public static void updateStatus(String update,int distance2) {
+  public static void updateStatus(String update,int distance2,int lSpeed,int rSpeed) {
 	  t.clear();
 	  t.drawString("Status: "+update, 0, 0);
 	  t.drawString("Distance: "+distance2, 0, 1);
+	  t.drawString("Left Speed: "+lSpeed, 0, 2);
+	  t.drawString("Right Speed: "+rSpeed, 0,3);
+	  t.drawString("------------------", 0,4);
   }
-  
 }

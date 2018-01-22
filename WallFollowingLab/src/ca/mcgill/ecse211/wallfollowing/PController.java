@@ -93,7 +93,7 @@ public class PController implements UltrasonicController {
     		WallFollowingLab.rightMotor.setSpeed(FWDSPEED);
     		WallFollowingLab.leftMotor.forward();
         WallFollowingLab.rightMotor.forward();
-        updateStatus("Turn right", distance,FWDSPEED,FWDSPEED);
+        updateStatus("Go straight", distance,FWDSPEED,FWDSPEED);
     		//Printer.updateLCD("Distance; "+distance+"Turn right");
     }else if(distError >0) {
     		/*	
@@ -164,5 +164,4 @@ public class PController implements UltrasonicController {
 	  t.drawString("Right Speed: "+rSpeed, 0,3);
 	  t.drawString("------------------", 0,4);
   }
-
 }
