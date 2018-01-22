@@ -15,7 +15,7 @@ public class PController implements UltrasonicController {
   private final int bandCenter;
   private final int bandWidth;
   private int distance;
-  private int filterControl;
+  private int filterControl=0;
   
   //define class variables
   public static final int allowedDistance = 30;
@@ -64,8 +64,7 @@ public class PController implements UltrasonicController {
     }
  
 	// measure how far off the sensor is from the allowedDistance
-	if (distance<=allowedDistance)
-		distError = allowedDistance - distance;
+	distError = allowedDistance - distance;
 	
 	// apply corrections using speed
     if (distance<=stopDistance) {
