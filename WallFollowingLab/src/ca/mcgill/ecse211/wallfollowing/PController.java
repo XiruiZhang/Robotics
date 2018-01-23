@@ -8,8 +8,8 @@ public class PController implements UltrasonicController {
   /* Constants */
   private static final int MOTOR_SPEED = 200;
   private static final int FILTER_OUT = 20;
-  public static final double PROPCONST = 1.0; // Proportionality constant
-  public static final int FWDSPEED = 100; // Forward speed (deg/sec)
+  public static final double PROPCONST = 2; // Proportionality constant
+  public static final int FWDSPEED = 200; // Forward speed (deg/sec)
   public static final int MAXCORRECTION = 50; 
   
   private final int bandCenter;
@@ -18,7 +18,7 @@ public class PController implements UltrasonicController {
   private int filterControl=0;
   
   //define class variables
-  public static final int allowedDistance = 30;
+  public static final int allowedDistance = 45;
   public static final int allowedDeviation =3;
   public static final int stopDistance = 15;
   public int cor=0;
@@ -32,10 +32,12 @@ public class PController implements UltrasonicController {
     this.bandWidth = bandwidth;
     this.filterControl = 0;
     // Initalize motor rolling forward
+    /*
     WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);
     WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED);
     WallFollowingLab.leftMotor.forward();
     WallFollowingLab.rightMotor.forward();
+    */
   }
 
   @Override
@@ -48,6 +50,8 @@ public class PController implements UltrasonicController {
 	// response: no distance is above 255
 	 * 
 	 */
+	 
+	/*  
     if (distance >= 255 && filterControl < FILTER_OUT) {
       // bad value, do not set the distance var, however do increment the
       // filter value
@@ -62,7 +66,7 @@ public class PController implements UltrasonicController {
       filterControl = 0;
       this.distance = distance;
     }
- 
+    */
 	// measure how far off the sensor is from the allowedDistance
 	distError = allowedDistance - distance;
 	
@@ -75,11 +79,12 @@ public class PController implements UltrasonicController {
     		// response: right Motor rotates backward 2 circles
     		 *
     		 */
-    		WallFollowingLab.leftMotor.rotate(-360);
-    		WallFollowingLab.rightMotor.rotate(-1080);
-    		//WallFollowingLab.leftMotor.backward();
-    		//WallFollowingLab.leftMotor.setSpeed(motorHigh);
-    		updateStatus("Avoiding crash", distance,-1,-2);
+    	WallFollowingLab.leftMotor.stop();
+		WallFollowingLab.rightMotor.stop();
+		WallFollowingLab.rightMotor.rotate(-120);
+		WallFollowingLab.leftMotor.rotate(30);
+		updateStatus("Avoiding crash", distance,-1,-2);
+		//System.out.println("Avoiding crash. "+distance+"-1 -2");
   	}else if(Math.abs(distError)<=allowedDeviation) {
   		/*
   		// maintain current course
@@ -88,11 +93,12 @@ public class PController implements UltrasonicController {
 		// response: move straight
 		 * 
 		 */
-    		WallFollowingLab.leftMotor.setSpeed(FWDSPEED);
-    		WallFollowingLab.rightMotor.setSpeed(FWDSPEED);
-    		WallFollowingLab.leftMotor.forward();
+    	WallFollowingLab.leftMotor.setSpeed(FWDSPEED);
+    	WallFollowingLab.rightMotor.setSpeed(FWDSPEED);
+    	WallFollowingLab.leftMotor.forward();
         WallFollowingLab.rightMotor.forward();
         updateStatus("Go straight", distance,FWDSPEED,FWDSPEED);
+        //System.out.println("Go Straight. "+distance+"-1 -2");
     		//Printer.updateLCD("Distance; "+distance+"Turn right");
     }else if(distError >0) {
     		/*	
@@ -107,6 +113,9 @@ public class PController implements UltrasonicController {
     		WallFollowingLab.leftMotor.forward();
         WallFollowingLab.rightMotor.forward();
         updateStatus("Turn right", distance,(FWDSPEED+cor),(FWDSPEED-cor));
+        
+		//Printer.updateLCD("Distance; "+distance+"Move Straight");
+        //System.out.println("Turn right. "+distance+" "+(FWDSPEED+cor)+" "+(FWDSPEED-cor));
     		//Printer.updateLCD("Distance; "+distance+"Move Straight");
     }else if(distError<=0){
     		/*
@@ -115,16 +124,16 @@ public class PController implements UltrasonicController {
 		// situation: sensor value >=33 
 		// response: turn left
 		 */
-    		WallFollowingLab.leftMotor.setSpeed(FWDSPEED-cor);
+    	cor = calcDeviation(distError);
+    	WallFollowingLab.leftMotor.setSpeed(FWDSPEED-cor);
 		WallFollowingLab.rightMotor.setSpeed(FWDSPEED+cor);
 		WallFollowingLab.leftMotor.forward();
 		WallFollowingLab.rightMotor.forward();
         updateStatus("Turn left", distance,FWDSPEED-cor,FWDSPEED+cor);
+        //System.out.println("Turn left. "+distance+" "+(FWDSPEED-cor)+" "+(FWDSPEED+cor));
     		//Printer.updateLCD("Distance; "+distance+"Turn Left");
     }
-
 }
-  
   
   @Override
   public int readUSDistance() {
@@ -149,7 +158,7 @@ public class PController implements UltrasonicController {
 		  correction = MAXCORRECTION;
 	  }
 	  // print corretion to screen
-	  t.drawString("Correction: "+correction, 0, 5);
+	  //t.drawString("Correction: "+correction, 0, 5);
 	  return correction;
   }
   /* 

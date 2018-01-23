@@ -13,7 +13,7 @@ public class BangBangController implements UltrasonicController {
   // define class variables
   private int distance;
   private int prevDist;
-  public static final int allowedDistance = 30;
+  public static final int allowedDistance = 40;
   public static final int allowedDeviation =3;
   public static final int stopDistance = 15;
   public int distError=0;
@@ -27,14 +27,16 @@ public class BangBangController implements UltrasonicController {
     this.bandwidth = bandwidth;
     this.motorLow = motorLow;
     this.motorHigh = motorHigh;
-    WallFollowingLab.leftMotor.setSpeed(motorHigh); // Start robot moving forward
-    WallFollowingLab.rightMotor.setSpeed(motorHigh);
-    WallFollowingLab.leftMotor.forward();
-    WallFollowingLab.rightMotor.forward();
+   
   }
 
   @Override
   public void processUSData(int distance) {
+	  	WallFollowingLab.leftMotor.setSpeed(motorHigh); // Start robot moving forward
+	    WallFollowingLab.rightMotor.setSpeed(motorHigh);
+	    WallFollowingLab.leftMotor.forward();
+	    WallFollowingLab.rightMotor.forward();
+	  
 	// the robot mains a counter-clockwise rotation  
 	this.distance = distance;
     // validate distance and mare sure the distance is not invalid
@@ -43,12 +45,7 @@ public class BangBangController implements UltrasonicController {
 	// situation: general
 	// response: no distance is above 2000
 	
-	if(isDistanceValid(distance)==true) {
-    		//if distance is not above 20000
-    		prevDist=distance;
-    }else {
-    		distance=prevDist;
-    }
+
 	// measure how far off the sensor is from the allowedDistance
 	distError = allowedDistance - distance;
 	// apply corrections using speed
@@ -60,16 +57,17 @@ public class BangBangController implements UltrasonicController {
     		// response: right Motor rotates backward 2 circles
     		 *
     		 */
-    		WallFollowingLab.leftMotor.rotate(-360);
-    		WallFollowingLab.rightMotor.rotate(-1080);
-    		//WallFollowingLab.leftMotor.backward();
-    		//WallFollowingLab.leftMotor.setSpeed(motorHigh);
+    		WallFollowingLab.leftMotor.stop();
+    		WallFollowingLab.rightMotor.stop();
+    		WallFollowingLab.rightMotor.rotate(-120);
+    		//WallFollowingLab.leftMotor.rotate(30);
     		updateStatus("Avoiding crash", distance,-1,-2);
+    		System.out.println("Avoiding crash. "+distance+"-1 -2");
   	}else if(Math.abs(distError)<=allowedDeviation) {
   		/*
   		// maintain current course
 		// test 2: status: not tested
-		// situation: sensor value between 27 and 33 
+		// situation: sensor value between 27 and 33
 		// response: move straight
 		 * 
 		 */
@@ -79,6 +77,7 @@ public class BangBangController implements UltrasonicController {
         WallFollowingLab.rightMotor.forward();
         updateStatus("Go straight", distance,motorHigh,motorHigh);
     		//Printer.updateLCD("Distance; "+distance+"Turn right");
+        System.out.println("Go straight. "+distance+" "+motorHigh+" "+motorHigh);
     }else if(distError >0) {
     		/*	
     		// turn right
@@ -87,12 +86,13 @@ public class BangBangController implements UltrasonicController {
 		// response: turn right
 		 * 
 		 */
-    		WallFollowingLab.leftMotor.setSpeed(motorHigh);
-    		WallFollowingLab.rightMotor.setSpeed(motorLow);
-    		WallFollowingLab.leftMotor.forward();
+    	WallFollowingLab.leftMotor.setSpeed(motorHigh);
+    	WallFollowingLab.rightMotor.setSpeed(motorLow);
+    	WallFollowingLab.leftMotor.forward();
         WallFollowingLab.rightMotor.forward();
         updateStatus("Turn right", distance,motorHigh,motorLow);
     		//Printer.updateLCD("Distance; "+distance+"Move Straight");
+        System.out.println("Turn right. "+distance+" "+motorHigh+" "+motorLow);
     }else if(distError<=0){
     		/*
     		// turn left
@@ -100,16 +100,17 @@ public class BangBangController implements UltrasonicController {
 		// situation: sensor value >=33 
 		// response: turn left
 		 */
-    		WallFollowingLab.leftMotor.setSpeed(motorLow);
+    	WallFollowingLab.leftMotor.setSpeed(motorLow);
 		WallFollowingLab.rightMotor.setSpeed(motorHigh);
 		WallFollowingLab.leftMotor.forward();
 		WallFollowingLab.rightMotor.forward();
         updateStatus("Turn left", distance,motorLow,motorHigh);
+        System.out.println("Turn left. "+distance+" "+motorLow+" "+motorHigh);
     		//Printer.updateLCD("Distance; "+distance+"Turn Left");
     }
   }
   
-  /*
+  /**
    * @see ca.mcgill.ecse211.wallfollowing.UltrasonicController#readUSDistance()
    * read Utrasonic sensor distance 
    */
@@ -118,18 +119,9 @@ public class BangBangController implements UltrasonicController {
     return this.distance;
   }
   
-  /*
-   *  based on obserrvation and testing in lab
-   *  value above 20000 is due to sensor error
-   */
-  public boolean isDistanceValid(int distance) {
-	  // false situation
-	  if(distance>=20000) {
-		  return false;
-	  }
-	  return true;
-  }
-  /* 
+
+
+  /** 
    * a class that prints to LCD
    */
   public static void updateStatus(String update,int distance2,int lSpeed,int rSpeed) {

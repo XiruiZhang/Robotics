@@ -18,6 +18,7 @@ public class UltrasonicPoller extends Thread {
   private SampleProvider us;
   private UltrasonicController cont;
   private float[] usData;
+  private int prevDistance=0;
 
   public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicController cont) {
     this.us = us;
@@ -35,13 +36,33 @@ public class UltrasonicPoller extends Thread {
     int distance;
     while (true) {
       us.fetchSample(usData, 0); // acquire data
-      distance = (int) (usData[0] * 100.0); // extract from buffer, cast to int
-      cont.processUSData(distance); // now take action depending on value
+      distance = (int) (usData[0] * 100.0);
+      if(isDistanceValid(distance)==true) {
+    	  cont.processUSData(distance); 
+      }
+      else {
+  		//distance=prevDistance;
+      }
+      //cont.processUSData(distance); // now take action depending on value
       try {
-        Thread.sleep(50);
+        Thread.sleep(100);
       } catch (Exception e) {
-      } // Poor man's timed sampling
+      }
     }
   }
-
+  /**
+   *  based on obserrvation and testing in lab
+   *  value above 20000 is due to sensor error
+   */
+  public boolean isDistanceValid(int distance) {
+	  System.out.println("Dist is: "+distance);
+	  if(distance==2147483647) {
+		  return true;
+	  }
+	  if(distance>=255) {
+		  return false;	  
+	  }
+	  
+	  return true;  
+  }
 }

@@ -13,8 +13,8 @@ public class WallFollowingLab {
 
   private static final int bandCenter = 20; // Offset from the wall (cm)
   private static final int bandWidth = 3; // Width of dead band (cm)
-  private static final int motorLow = 100; // Speed of slower rotating wheel (deg/sec)
-  private static final int motorHigh = 200; // Speed of the faster rotating wheel (deg/seec)
+  private static final int motorLow = 130; // Speed of slower rotating wheel (deg/sec)
+  private static final int motorHigh = 220; // Speed of the faster rotating wheel (deg/seec)
 
   // Ultrasonic sensor uses S1 port3
   private static final Port usPort = LocalEV3.get().getPort("S4");
@@ -26,24 +26,19 @@ public class WallFollowingLab {
       new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
   // The motor that turns ultrasonic sensor uses B port
   public static final EV3MediumRegulatedMotor usMotor =
-		  new EV3MediumRegulatedMotor(LocalEV3.get().getPort("C"));
+		  new EV3MediumRegulatedMotor(LocalEV3.get().getPort("B"));
   
   public static void main(String[] args) {
     int option = 0;
     Printer.printMainMenu("Waiting for input"); // Set up the display on the EV3 screen
     // turn the Ultrasonic sensor 45 degress to the left to 
     // form a 45 degree angle with the wall
-    //usMotor.rotateTo(-45);
+    //usMotor.rotateTo(45);
     
     while (option == 0) // and wait for a button press. The button
       option = Button.waitForAnyPress(); // ID (option) determines what type of control to use
 
-    // Setup controller objects
-
-    BangBangController bangbangController =
-        new BangBangController(bandCenter, bandWidth, motorLow, motorHigh);
-
-    PController pController = new PController(bandCenter, bandWidth);
+    
 
     // Setup ultrasonic sensor
     // There are 4 steps involved:
@@ -65,16 +60,22 @@ public class WallFollowingLab {
 
     // Setup Ultrasonic Poller // This thread samples the US and invokes
     UltrasonicPoller usPoller = null; // the selected controller on each cycle
+    
+ // Setup controller objects
 
     // Depending on which button was pressed, invoke the US poller and printer with the
     // appropriate constructor.
 
     switch (option) {
       case Button.ID_LEFT: // Bang-bang control selected
+
+    	BangBangController bangbangController =
+    	        new BangBangController(bandCenter, bandWidth, motorLow, motorHigh);
         usPoller = new UltrasonicPoller(usDistance, usData, bangbangController);
         printer = new Printer(option, bangbangController);
         break;
       case Button.ID_RIGHT: // Proportional control selected
+    	  PController pController = new PController(bandCenter, bandWidth);
         usPoller = new UltrasonicPoller(usDistance, usData, pController);
         printer = new Printer(option, pController);
         break;
@@ -90,6 +91,7 @@ public class WallFollowingLab {
 
     // Wait here forever until button pressed to terminate wallfollower
     Button.waitForAnyPress();
+    //Printer.updateLCD("Exiting System");
     System.exit(0);
 
   }
