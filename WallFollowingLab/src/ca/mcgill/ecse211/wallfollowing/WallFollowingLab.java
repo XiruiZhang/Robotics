@@ -61,7 +61,7 @@ public class WallFollowingLab {
     // Setup Ultrasonic Poller // This thread samples the US and invokes
     UltrasonicPoller usPoller = null; // the selected controller on each cycle
     
- // Setup controller objects
+    // Setup controller objects
 
     // Depending on which button was pressed, invoke the US poller and printer with the
     // appropriate constructor.

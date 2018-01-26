@@ -49,9 +49,7 @@ public class PController implements UltrasonicController {
 	// situation: general
 	// response: no distance is above 255
 	 * 
-	 */
-	 
-	/*  
+	 */ 
     if (distance >= 255 && filterControl < FILTER_OUT) {
       // bad value, do not set the distance var, however do increment the
       // filter value
@@ -66,7 +64,6 @@ public class PController implements UltrasonicController {
       filterControl = 0;
       this.distance = distance;
     }
-    */
 	// measure how far off the sensor is from the allowedDistance
 	distError = allowedDistance - distance;
 	
@@ -157,8 +154,8 @@ public class PController implements UltrasonicController {
 		   */
 		  correction = MAXCORRECTION;
 	  }
-	  // print corretion to screen
-	  //t.drawString("Correction: "+correction, 0, 5);
+	  // print correction to screen
+	  t.drawString("Correction: "+correction, 0, 5);
 	  return correction;
   }
   /* 

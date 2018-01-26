@@ -62,7 +62,6 @@ public class UltrasonicPoller extends Thread {
 	  if(distance>=255) {
 		  return false;	  
 	  }
-	  
 	  return true;  
   }
 }
