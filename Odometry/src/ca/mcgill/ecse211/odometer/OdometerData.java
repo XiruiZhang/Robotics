@@ -22,21 +22,14 @@ public class OdometerData {
   private volatile double theta; // Head angle
 
   // Class control variables
-  private volatile static int numberOfIntances = 0; // Number of OdometerData
-                                                    // objects instantiated
-                                                    // so far
-  private static final int MAX_INSTANCES = 1; // Maximum number of
-                                              // OdometerData instances
+  private volatile static int numberOfIntances = 0; // Number of OdometerData  objects instantiated  so far
+  private static final int MAX_INSTANCES = 1; // Maximum number of OdometerData instances
 
   // Thread control tools
   private static Lock lock = new ReentrantLock(true); // Fair lock for
                                                       // concurrent writing
-  private volatile boolean isReseting = false; // Indicates if a thread is
-                                               // trying to reset any
-                                               // position parameters
-  private Condition doneReseting = lock.newCondition(); // Let other threads
-                                                        // know that a reset
-                                                        // operation is
+  private volatile boolean isReseting = false; // Indicates if a thread is trying to reset any position parameters
+  private Condition doneReseting = lock.newCondition(); // Let other threads know that a reset operation is
                                                         // over.
 
   private static OdometerData odoData = null;
@@ -121,9 +114,7 @@ public class OdometerData {
     try {
       x += dx;
       y += dy;
-      theta = (theta + (360 + dtheta) % 360) % 360; // keeps the updates
-                                                    // within 360
-                                                    // degrees
+      theta = (theta + (360 + dtheta) % 360) % 360; // keeps the updates within 360 degrees
       isReseting = false; // Done reseting
       doneReseting.signalAll(); // Let the other threads know that you are
                                 // done reseting

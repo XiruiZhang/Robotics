@@ -10,11 +10,13 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class Lab2 {
 
   // Motor Objects, and Robot related parameters
+// ToDo: change parameter here	
   private static final EV3LargeRegulatedMotor leftMotor =
       new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
   private static final EV3LargeRegulatedMotor rightMotor =
-      new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+      new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
   private static final TextLCD lcd = LocalEV3.get().getTextLCD();
+ // ToDo: change wheel constant here
   public static final double WHEEL_RAD = 2.2;
   public static final double TRACK = 17.0;
 
@@ -24,27 +26,24 @@ public class Lab2 {
 
     // Odometer related objects
     Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD); // TODO Complete implementation
-    OdometryCorrection odometryCorrection = new OdometryCorrection(); // TODO Complete
-                                                                      // implementation
+    OdometryCorrection odometryCorrection = new OdometryCorrection(); // TODO Complete  // implementation
     Display odometryDisplay = new Display(lcd); // No need to change
-
 
     do {
       // clear the display
       lcd.clear();
 
       // ask the user whether the motors should drive in a square or float
+      // left is float, right is square
       lcd.drawString("< Left | Right >", 0, 0);
-      lcd.drawString("       |        ", 0, 1);
-      lcd.drawString(" Float | Drive  ", 0, 2);
-      lcd.drawString("motors | in a   ", 0, 3);
-      lcd.drawString("       | square ", 0, 4);
+      lcd.drawString("L: float, R: square", 0, 1); 
 
       buttonChoice = Button.waitForAnyPress(); // Record choice (left or right press)
     } while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
 
     if (buttonChoice == Button.ID_LEFT) {
-      // Float the motors
+      // set the motors into float 
+    	 // motor will stop the motor without braking and the position of the motor will not be maintained.
       leftMotor.forward();
       leftMotor.flt();
       rightMotor.forward();
@@ -62,12 +61,11 @@ public class Lab2 {
       lcd.clear();
 
       // ask the user whether odometery correction should be run or not
+      // left is w/o corection, r is w correction
       lcd.drawString("< Left | Right >", 0, 0);
-      lcd.drawString("  No   | with   ", 0, 1);
-      lcd.drawString(" corr- | corr-  ", 0, 2);
-      lcd.drawString(" ection| ection ", 0, 3);
-      lcd.drawString("       |        ", 0, 4);
-
+      lcd.drawString("L: W/O Correction",0,1); 
+      lcd.drawString("R: w Correction",  0, 2); 
+      
       buttonChoice = Button.waitForAnyPress(); // Record choice (left or right press)
 
       // Start odometer and display threads

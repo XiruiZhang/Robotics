@@ -10,6 +10,8 @@
 
 package ca.mcgill.ecse211.odometer;
 
+import java.util.LinkedList;
+
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class Odometer extends OdometerData implements Runnable {
@@ -18,16 +20,29 @@ public class Odometer extends OdometerData implements Runnable {
   private static Odometer odo = null; // Returned as singleton
 
   // Motors and related variables
-  private int leftMotorTachoCount;
-  private int rightMotorTachoCount;
+  // ToDo: implement as queue data structure  
+  LinkedList<Integer> leftMotorTachoCount;
+  LinkedList<Integer> rightMotorTachoCount;
   private EV3LargeRegulatedMotor leftMotor;
   private EV3LargeRegulatedMotor rightMotor;
 
+  // constant information about the robot design
   private final double TRACK;
   private final double WHEEL_RAD;
+  
+  // delta variables
+  private double deltaTheta;
+  private double deltaDist;
+  double theta;
 
-  private double[] position;
-
+  //private double[] position;
+  /*
+   * dLeft: left wheel change
+   * dRight: right wheel change
+   * dTheta: change in angle
+   * dPostion:  change in postion
+   */
+  private double dLeft,dRight, dX,dY;
 
   private static final long ODOMETER_PERIOD = 25; // odometer update period in ms
 
@@ -49,8 +64,8 @@ public class Odometer extends OdometerData implements Runnable {
     // Reset the values of x, y and z to 0
     odoData.setXYT(0, 0, 0);
 
-    this.leftMotorTachoCount = 0;
-    this.rightMotorTachoCount = 0;
+    this.leftMotorTachoCount.clear();
+    this.rightMotorTachoCount.clear();
 
     this.TRACK = TRACK;
     this.WHEEL_RAD = WHEEL_RAD;
@@ -101,14 +116,22 @@ public class Odometer extends OdometerData implements Runnable {
 
     while (true) {
       updateStart = System.currentTimeMillis();
-
-      leftMotorTachoCount = leftMotor.getTachoCount();
-      rightMotorTachoCount = rightMotor.getTachoCount();
-
-      // TODO Calculate new robot position based on tachometer counts
-      
-      // TODO Update odometer values with new calculated values
-      odo.update(0.5, 1.8, 20.1);
+      // adds new count to the end of the list
+      leftMotorTachoCount.add(leftMotor.getTachoCount());
+      rightMotorTachoCount.add(rightMotor.getTachoCount());
+      // getting newest odometer data and calculate delta
+      // remove the old data but only peek the new data, new data automatically becomes the new data after rotation
+      dLeft=Math.PI*WHEEL_RAD*(leftMotorTachoCount.getLast()-leftMotorTachoCount.removeFirst())/180;
+      dRight=Math.PI*WHEEL_RAD*(rightMotorTachoCount.getLast()-rightMotorTachoCount.removeFirst())/180;
+      // Calculate new robot position based on tachometer counts
+      deltaTheta=(dLeft-dRight)/TRACK;
+      deltaDist=(dLeft-dRight)*0.5;
+      // calcualte new x, y and theta displacement
+      theta+=deltaTheta;
+      dX=deltaDist*Math.sin(theta);
+      dY=deltaDist*Math.cos(theta);
+      // update odometer value
+      odo.update(dX, dY,theta);
 
       // this ensures that the odometer only runs once every period
       updateEnd = System.currentTimeMillis();
