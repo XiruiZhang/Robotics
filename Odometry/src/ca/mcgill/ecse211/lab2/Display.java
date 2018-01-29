@@ -58,6 +58,9 @@ public class Display implements Runnable {
       lcd.drawString("Y: " + numberFormat.format(position[1]), 0, 1);
       lcd.drawString("T: " + numberFormat.format(position[2]), 0, 2);
       
+      //System.out.println("X: "+position[0]);
+      //System.out.println("Y: "+position[1]);
+      //System.out.println("T: "+position[2]);
       // this ensures that the data is updated only once every period
       updateEnd = System.currentTimeMillis();
       if (updateEnd - updateStart < DISPLAY_PERIOD) {

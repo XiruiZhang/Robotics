@@ -18,7 +18,7 @@ public class Lab2 {
   private static final TextLCD lcd = LocalEV3.get().getTextLCD();
  // ToDo: change wheel constant here
   public static final double WHEEL_RAD = 2.2;
-  public static final double TRACK = 17.0;
+  public static final double TRACK =16.1;
 
   public static void main(String[] args) throws OdometerExceptions {
 

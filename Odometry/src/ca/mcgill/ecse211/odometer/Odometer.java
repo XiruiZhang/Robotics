@@ -31,8 +31,7 @@ public class Odometer extends OdometerData implements Runnable {
   private final double WHEEL_RAD;
   
   // delta variables
-  private double deltaTheta;
-  private double deltaDist;
+ 
   double theta;
 
   //private double[] position;
@@ -42,7 +41,7 @@ public class Odometer extends OdometerData implements Runnable {
    * dTheta: change in angle
    * dPostion:  change in postion
    */
-  private double dLeft,dRight, dX,dY;
+  
 
   private static final long ODOMETER_PERIOD = 25; // odometer update period in ms
 
@@ -60,12 +59,15 @@ public class Odometer extends OdometerData implements Runnable {
                                               // manipulation methods
     this.leftMotor = leftMotor;
     this.rightMotor = rightMotor;
-
+    
     // Reset the values of x, y and z to 0
     odoData.setXYT(0, 0, 0);
-
-    this.leftMotorTachoCount.clear();
-    this.rightMotorTachoCount.clear();
+    this.leftMotorTachoCount=new LinkedList<Integer>();
+    this.rightMotorTachoCount=new LinkedList<Integer>();
+    // Add first tachocount
+    leftMotorTachoCount.addFirst(0);
+    rightMotorTachoCount.addFirst(0);
+    //this.rightMotorTachoCount.clear();
 
     this.TRACK = TRACK;
     this.WHEEL_RAD = WHEEL_RAD;
@@ -116,22 +118,42 @@ public class Odometer extends OdometerData implements Runnable {
 
     while (true) {
       updateStart = System.currentTimeMillis();
+      double deltaTheta;
+      double deltaDist;
+      double dLeft,dRight, dX,dY;
       // adds new count to the end of the list
-      leftMotorTachoCount.add(leftMotor.getTachoCount());
-      rightMotorTachoCount.add(rightMotor.getTachoCount());
+      leftMotorTachoCount.addLast(leftMotor.getTachoCount());
+      rightMotorTachoCount.addLast(rightMotor.getTachoCount());
       // getting newest odometer data and calculate delta
       // remove the old data but only peek the new data, new data automatically becomes the new data after rotation
+      //System.out.println("LL: "+leftMotorTachoCount.toString());
+      //System.out.println("OLTC: "+leftMotorTachoCount.getFirst());
+      //System.out.println("NLTC: "+leftMotorTachoCount.getLast());
       dLeft=Math.PI*WHEEL_RAD*(leftMotorTachoCount.getLast()-leftMotorTachoCount.removeFirst())/180;
+      //System.out.println("dL: "+dLeft);
       dRight=Math.PI*WHEEL_RAD*(rightMotorTachoCount.getLast()-rightMotorTachoCount.removeFirst())/180;
+      //System.out.println("dR: "+dRight);
       // Calculate new robot position based on tachometer counts
       deltaTheta=(dLeft-dRight)/TRACK;
-      deltaDist=(dLeft-dRight)*0.5;
+      deltaDist=(dLeft+dRight)*0.5;
       // calcualte new x, y and theta displacement
-      theta+=deltaTheta;
+      theta=(theta+deltaTheta);
+
       dX=deltaDist*Math.sin(theta);
       dY=deltaDist*Math.cos(theta);
+      
       // update odometer value
-      odo.update(dX, dY,theta);
+      // REMOVE LATER:
+      //System.out.println("dx: "+dX+"dy: "+dY+"A: "+theta);
+      odo.update(dX, dY,deltaTheta*180/Math.PI);
+      //System.out.println("dTheta: "+deltaTheta);
+      //System.out.println("Theta: "+theta);
+      // reset deltaTheta value
+      deltaTheta=0;
+      dLeft=0;
+      dRight=0;
+      
+      
 
       // this ensures that the odometer only runs once every period
       updateEnd = System.currentTimeMillis();
