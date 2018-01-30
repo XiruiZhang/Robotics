@@ -31,10 +31,8 @@ public class Odometer extends OdometerData implements Runnable {
   private final double WHEEL_RAD;
   
   // delta variables
- 
   double theta;
 
-  //private double[] position;
   /*
    * dLeft: left wheel change
    * dRight: right wheel change
@@ -138,7 +136,10 @@ public class Odometer extends OdometerData implements Runnable {
       deltaDist=(dLeft+dRight)*0.5;
       // calcualte new x, y and theta displacement
       theta=(theta+deltaTheta);
-
+      //if theta is over 360, reset theta
+      if(Math.toDegrees(theta)>=360){
+    	  	theta=Math.toRadians(theta-360);
+      }
       dX=deltaDist*Math.sin(theta);
       dY=deltaDist*Math.cos(theta);
       
@@ -152,7 +153,6 @@ public class Odometer extends OdometerData implements Runnable {
       deltaTheta=0;
       dLeft=0;
       dRight=0;
-      
       
 
       // this ensures that the odometer only runs once every period

@@ -139,19 +139,7 @@ public class OdometryCorrection implements Runnable {
       }
     }
   }
-  /*
-  // determines according to theta is ev3 is moving in x direction or y direction
-  public boolean isMovingX(double theta){
-	  	// robot is moving in q1 or q3
-		if ((theta>315)||(Math.abs(theta)<45) || (theta>=135&&theta<=225)){
-			return true;
-		}
-		// robot is moving in q2 or q4
-		else{ 
-			return false;
-		}
-	}
-	*/
+
   // return offset of x due to sensor placement
   private double getsensorOffsetX(){
 	  return Math.sin(odometer.theta*sensorOffset);
