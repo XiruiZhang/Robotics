@@ -1,29 +1,39 @@
 // Lab2.java
-package ca.mcgill.ecse211.lab2;
+package ca.mcgill.ecse211.lab3;
+
+import java.util.ArrayList;
 
 import ca.mcgill.ecse211.odometer.*;
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 
-public class Lab2 {
+public class Lab3 {
 
   // Motor Objects, and Robot related parameters
-// ToDo: change parameter here	
   private static final EV3LargeRegulatedMotor leftMotor =
       new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
   private static final EV3LargeRegulatedMotor rightMotor =
-      new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+      new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+  private static final EV3MediumRegulatedMotor usMotor=
+		  new EV3MediumRegulatedMotor(LocalEV3.get().getPort("C"));
+  
   private static final TextLCD lcd = LocalEV3.get().getTextLCD();
- // ToDo: change wheel constant here
   public static final double WHEEL_RAD = 2.2;
   public static final double TRACK =15.8;
-
+  
+  // the coordinates for the robot to follow
+  ArrayList<Integer> x=new ArrayList<Integer>();
+  ArrayList<Integer> y=new ArrayList<Integer>();
+  public static int[] xPos= {0,1,0,1,2};
+  public static int[] yPos= {0,1,2,1,0};
+		  
   public static void main(String[] args) throws OdometerExceptions {
-
+	  
     int buttonChoice;
-
+    
     // Odometer related objects
     Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD); // TODO Complete implementation
     OdometryCorrection odometryCorrection = new OdometryCorrection(); // TODO Complete  // implementation
@@ -32,29 +42,30 @@ public class Lab2 {
     do {
       // clear the display
       lcd.clear();
-
-      // ask the user whether the motors should drive in a square or float
-      // left is float, right is square
+      // ask the user whether the motors should drive with obstacle avoidance
       lcd.drawString("< Left | Right >", 0, 0);
-      lcd.drawString("L: float, R: square", 0, 1); 
+      lcd.drawString("L: drive, R: avoid", 0, 1); 
 
       buttonChoice = Button.waitForAnyPress(); // Record choice (left or right press)
     } while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
 
     if (buttonChoice == Button.ID_LEFT) {
-      // set the motors into float 
-    	 // motor will stop the motor without braking and the position of the motor will not be maintained.
-      leftMotor.forward();
-      leftMotor.flt();
-      rightMotor.forward();
-      rightMotor.flt();
-
+      
       // Display changes in position as wheels are (manually) moved
       
       Thread odoThread = new Thread(odometer);
       odoThread.start();
       Thread odoDisplayThread = new Thread(odometryDisplay);
       odoDisplayThread.start();
+      // start a new navigation thread
+      Navigation newNav=new Navigation(odometer, leftMotor, rightMotor, WHEEL_RAD, TRACK);
+      // navigate according to coordinates
+      for (int i=0;i<5;i++) {
+    	  	newNav.travelTo(xPos[i], yPos[i]);
+      }
+      lcd.clear();
+      lcd.drawString("Nav Complete", 0, 0);
+      
 
     } else {
       // clear the display
@@ -62,28 +73,19 @@ public class Lab2 {
 
       // ask the user whether odometery correction should be run or not
       // left is w/o corection, r is w correction
-      lcd.drawString("< Left | Right >", 0, 0);
-      lcd.drawString("L: W/O Correction",0,1); 
-      lcd.drawString("R: w Correction",  0, 2); 
-      
-      buttonChoice = Button.waitForAnyPress(); // Record choice (left or right press)
+      lcd.drawString("Avoidng obstables", 0, 0);
 
       // Start odometer and display threads
       Thread odoThread = new Thread(odometer);
       odoThread.start();
       Thread odoDisplayThread = new Thread(odometryDisplay);
       odoDisplayThread.start();
-
-      // Start correction if right button was pressed
-      if (buttonChoice == Button.ID_RIGHT) {
-        Thread odoCorrectionThread = new Thread(odometryCorrection);
-        odoCorrectionThread.start();
-      }
-
+      //ToDo: start obstable avoidance thread
+      
       // spawn a new Thread to avoid SquareDriver.drive() from blocking
       (new Thread() {
         public void run() {
-          SquareDriver.drive(leftMotor, rightMotor, WHEEL_RAD, WHEEL_RAD, TRACK);
+          Navigation.drive(leftMotor, rightMotor, WHEEL_RAD, WHEEL_RAD, TRACK);
         }
       }).start();
     }
