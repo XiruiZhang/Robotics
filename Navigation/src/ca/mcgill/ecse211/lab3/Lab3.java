@@ -80,14 +80,13 @@ public class Lab3 {
       odoThread.start();
       Thread odoDisplayThread = new Thread(odometryDisplay);
       odoDisplayThread.start();
-      //ToDo: start obstable avoidance thread
-      
+      //start obstacle avoidance thread
+      NavigationAvoid newNavigationAvoid=new NavigationAvoid(odometer, leftMotor, rightMotor, usMotor, WHEEL_RAD, TRACK);
+      for (int i=0;i<5;i++) {
+  	  	newNavigationAvoid.travelTo(xPos[i], yPos[i]);
+      }
       // spawn a new Thread to avoid SquareDriver.drive() from blocking
-      (new Thread() {
-        public void run() {
-          Navigation.drive(leftMotor, rightMotor, WHEEL_RAD, WHEEL_RAD, TRACK);
-        }
-      }).start();
+      
     }
 
     while (Button.waitForAnyPress() != Button.ID_ESCAPE);

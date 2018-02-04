@@ -5,7 +5,6 @@ import ca.mcgill.ecse211.ultrasonic.UltrasonicController;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.sensor.HiTechnicAngleSensor;
 import lejos.robotics.RegulatedMotor;
 /**
  * This class is used to drive the robot on the demo floor while avoiding obstacles
@@ -32,8 +31,9 @@ public class NavigationAvoid extends Thread implements UltrasonicController{
 	int state=0;
 	double xOrigin=0;
 	double yOrigin=0;
-	int dirCompensation=-1;
+	double dirCompensation=-1;
 	boolean isOffsetX=false;
+	boolean isFinished=false;
 	
 	NavigationAvoid(Odometer odometer, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
 		  EV3MediumRegulatedMotor usMotor,double track,double wr) {
@@ -102,10 +102,11 @@ public class NavigationAvoid extends Thread implements UltrasonicController{
 				// compensate the distance back
 				// check which direction
 				if(isOffsetX) {
-					
-					moveForward(odometer.getXYT()[0]-xOrigin);
+					dirCompensation=odometer.getXYT()[0]-xOrigin;
+					moveForward(dirCompensation);
 				}else {
-					moveForward(odometer.getXYT()[1]-yOrigin);
+					dirCompensation=odometer.getXYT()[1]-yOrigin;
+					moveForward(dirCompensation);
 				}
 			}
 		}else {
@@ -127,9 +128,9 @@ public class NavigationAvoid extends Thread implements UltrasonicController{
 				usMotor.rotate(-90);
 				turnTo(90);
 				if(isOffsetX) {
-					dirCompensation=odometer.getXYT()[1]-yO;
+					moveForward(dirCompensation);
 				}else {
-					moveForward(odometer.getXYT()[1]-yOrigin);
+					moveForward(dirCompensation);
 				}
 			}
 		}
@@ -180,6 +181,7 @@ public class NavigationAvoid extends Thread implements UltrasonicController{
 		leftMotor.rotate(convertDistance(wr, linearDistance), true);
 		rightMotor.rotate(convertDistance(wr, linearDistance), false);
 		leftMotor.endSynchronization();
+		isFinished=true;
 		
 	}
 	
@@ -260,5 +262,11 @@ public class NavigationAvoid extends Thread implements UltrasonicController{
   }
   private static double getLinearDistance(double x,double y) {
 	  return Math.hypot(x, y);
+  }
+  /*
+   * This class helps return from the thread
+   */
+  public boolean isFinished() {
+	  return isFinished;
   }
 }
