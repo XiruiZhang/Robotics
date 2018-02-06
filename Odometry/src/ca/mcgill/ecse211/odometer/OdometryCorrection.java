@@ -36,7 +36,6 @@ public class OdometryCorrection implements Runnable {
   public OdometryCorrection() throws OdometerExceptions {
 
     this.odometer = Odometer.getOdometer();
-    // ToDo: color sensor connects to s1
     // Improvement: use getColorMode(0
     this.colorSensor=new EV3ColorSensor(SensorPort.S4);
     colorProvider=colorSensor.getRedMode();
@@ -56,11 +55,6 @@ public class OdometryCorrection implements Runnable {
       // fetch color from Sample Provider thread
       colorProvider.fetchSample(color, 0);
       lightVal=color[0]*1000;
-      /*
-       * Test 0: status: passed
-       *  Verify lightVal
-       */
-      //System.out.println("Lightval: "+lightVal);
       // if robot is not on the line
       // light sensor in red mode should output value less than 10
       if(lightVal <=BLACK_THRESHOLD){
@@ -68,7 +62,6 @@ public class OdometryCorrection implements Runnable {
     	  	theta=odometer.theta;
     	  	double offset;
     	  	// if robot is moving in x direction
-    	  	// intersection of the two grid lines as the origin (0,0).
     	  	if(isMovingX){
     	  		// beep once when in x direction
     	  		Sound.beep();
@@ -89,18 +82,14 @@ public class OdometryCorrection implements Runnable {
     	  		if(xLine<=3) {
     	  			// positive correction
     	  			offset=yOffset;
-    	  			//.out.println("P offset: "+offset);
     	  		}
     	  		else if(xLine!=6) { 
     	  			// on the way back
     	  			offset=2*TILE_LENGTH-yOffset;
-    	  			//.System.out.println("N offset: "+offset);
     	  		}else{
     	  			offset=2*TILE_LENGTH-yOffset-4;
     	  		}
-    	  		//odometer.setY(yOffset-getsensorOffsetX());
     	  		odometer.setY(offset);
-    	  		//System.out.println("yOffset: "+offset);
     	  	}else{
     	  		// beep twice when crossing in y direction
     	  		Sound.twoBeeps();
@@ -118,16 +107,13 @@ public class OdometryCorrection implements Runnable {
     	  		if(yLine<=3) {
     	  			// positive correction
     	  			offset=xOffset;
-    	  			//.out.println("P offset: "+offset);
     	  		}
     	  		else { 
     	  			// on the way back
     	  			offset=2*TILE_LENGTH-xOffset;
-    	  			//.System.out.println("N offset: "+offset);
+ 
     	  		}
-    	  		//odometer.setY(yOffset-getsensorOffsetX());
     	  		odometer.setX(offset);
-    	  		//System.out.println("xOffset: "+offset);
     	  	}
       }
       // this ensure the odometry correction occurs only once every period
