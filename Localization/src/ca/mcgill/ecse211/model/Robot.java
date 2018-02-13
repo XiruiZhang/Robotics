@@ -25,11 +25,11 @@ public class Robot {
 	public static final double WHEEL_RAD = 2.2;
 	public static final double TRACK = 15.8;
 	public static final double TILE_SIZE = 30.48;
-	private static final int FORWARD_SPEED = 100;
+	private static final int FORWARD_SPEED = 50;
 	private static final int ROTATE_SPEED = 50;
 	public static double lsOffset=2.0; // distance of light sensor to wheel axis
 	public static int usMotorAngle=0;
-	private static double OFF_CONST=1.1;
+	private static double OFF_CONST=1.02;
 	
 	// locType and state of the robot
 	public enum LocalizationCategory {
@@ -53,7 +53,7 @@ public class Robot {
 		 * Set acceleration to 3000 the default speed is 6000 this gives a smooth
 		 * acceleration
 		 */
-		thetaDest=thetaDest*OFF_CONST;
+		thetaDest=thetaDest/OFF_CONST;
 		leftMotor.setAcceleration(50);
 		rightMotor.setAcceleration(50);
 		leftMotor.setSpeed(ROTATE_SPEED);
@@ -74,8 +74,8 @@ public class Robot {
 	 */
 	public static void travelTo(double linearDistance) {
 		// move the linear distance possible improvement here
-		leftMotor.setAcceleration(300);
-		rightMotor.setAcceleration(300);
+		leftMotor.setAcceleration(50);
+		rightMotor.setAcceleration(50);
 		leftMotor.setSpeed(FORWARD_SPEED);
 		rightMotor.setSpeed(FORWARD_SPEED);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, linearDistance), true);
@@ -89,8 +89,7 @@ public class Robot {
 	 */
 	public static void travelTo(double xCurrent,double yCurrent,double thetaCurrent,double xDest,double yDest) {
 		// convert coordinate to length
-		xDest=xDest * TILE_SIZE;
-		yDest=yDest * TILE_SIZE;
+		System.out.println("In the model: xDest,yDest"+xDest+" "+yDest);
 		double dX=xDest-xCurrent;
 		double dY=yDest-yCurrent;
 		double linearDistance=getLinearDistance(dX, dY);
@@ -113,8 +112,8 @@ public class Robot {
 		}
 		turnTo(angularDistance);
 		// move the linear distance possible improvement here
-		leftMotor.setAcceleration(300);
-		rightMotor.setAcceleration(300);
+		leftMotor.setAcceleration(50);
+		rightMotor.setAcceleration(50);
 		leftMotor.setSpeed(FORWARD_SPEED);
 		rightMotor.setSpeed(FORWARD_SPEED);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, linearDistance), true);
@@ -138,6 +137,24 @@ public class Robot {
 	
 	public static TextLCD getLCD() {
 		return lcd;
+	}
+	
+	/**
+	 * Run diagonostic  on the robot
+	 * @return integer, 0: normal, 1: faulty
+	 */
+	public static int runDiagonistic() {
+		int ret=1;
+		if(leftMotor.isStalled()) {
+			System.out.println("Left motor is stalled");
+			ret=1;
+		}else if (rightMotor.isStalled()) {
+			System.out.println("Right motor is stalled");
+			ret=1;
+		}else if(usMotor.isStalled()) {
+			System.out.println("US motor is stalled");
+		}
+		return ret;		
 	}
 	
 	public void clearLCD() {

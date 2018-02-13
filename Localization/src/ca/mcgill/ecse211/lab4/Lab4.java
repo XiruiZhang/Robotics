@@ -4,16 +4,9 @@ package ca.mcgill.ecse211.lab4;
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.model.*;
 
-import ca.mcgill.ecse211.ultrasonic.UltrasonicController;
 import ca.mcgill.ecse211.ultrasonic.UltrasonicPoller;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.lcd.TextLCD;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.port.SensorPort;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.hardware.sensor.SensorModes;
 
 public class Lab4 {
 

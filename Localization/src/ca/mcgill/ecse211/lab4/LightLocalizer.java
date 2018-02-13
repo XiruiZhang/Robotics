@@ -8,7 +8,7 @@ public class LightLocalizer {
 	private Odometer odometer;
 	private float[] color;
 	private float lightVal=100;
-	private static final int BLACK_THRESHOLD=280;// the threshold is 280 when light sensor is 1cm from ground
+	private static final int BLACK_THRESHOLD=300;// the threshold is 280 when light sensor is 1cm from ground
 	private double dX,dY;
 	
 	public LightLocalizer(Odometer odometer) {
@@ -75,8 +75,12 @@ public class LightLocalizer {
 		odometer.setXYT(0, 0, 0);
 		// add correction here
 		System.out.println("dX: "+dX+"dY: "+dY);
-		Robot.travelTo(odometer.getXYT()[0],odometer.getXYT()[1], odometer.getXYT()[2],-dX , dY);
-		Robot.turnTo(-Math.toRadians(90-odometer.getTheta()));
+		Robot.travelTo(0,0, 0,dX , dY);
+		System.out.println("Aligning"+(270-odometer.getTheta()));
+		Robot.turnTo(Math.toRadians(270-odometer.getTheta()));
+		// reset odometer
+		odometer.setXYT(0, 0, 0);
 	}
+	
 	
 }
