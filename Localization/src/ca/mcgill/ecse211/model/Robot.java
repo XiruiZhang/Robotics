@@ -29,6 +29,7 @@ public class Robot {
 	private static final int ROTATE_SPEED = 50;
 	public static double lsOffset=2.0; // distance of light sensor to wheel axis
 	public static int usMotorAngle=0;
+	private static double OFF_CONST=1.1;
 	
 	// locType and state of the robot
 	public enum LocalizationCategory {
@@ -52,6 +53,7 @@ public class Robot {
 		 * Set acceleration to 3000 the default speed is 6000 this gives a smooth
 		 * acceleration
 		 */
+		thetaDest=thetaDest*OFF_CONST;
 		leftMotor.setAcceleration(50);
 		rightMotor.setAcceleration(50);
 		leftMotor.setSpeed(ROTATE_SPEED);
@@ -64,6 +66,60 @@ public class Robot {
 		leftMotor.rotate(rotationAngle, true);
 		rightMotor.rotate(-rotationAngle);
 	}
+	/**
+	 * This method drives robot to a specific location
+	 * @author jamestang
+	 * @param xDest: x coordinate in cm
+	 * @param yDest: y coordinate in cm
+	 */
+	public static void travelTo(double linearDistance) {
+		// move the linear distance possible improvement here
+		leftMotor.setAcceleration(300);
+		rightMotor.setAcceleration(300);
+		leftMotor.setSpeed(FORWARD_SPEED);
+		rightMotor.setSpeed(FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(WHEEL_RAD, linearDistance), true);
+		rightMotor.rotate(convertDistance(WHEEL_RAD, linearDistance), false);
+	}
+	/**
+	 * This method drives robot to a specific location
+	 * @author jamestang
+	 * @param xDest: x coordinate in cm
+	 * @param yDest: y coordinate in cm
+	 */
+	public static void travelTo(double xCurrent,double yCurrent,double thetaCurrent,double xDest,double yDest) {
+		// convert coordinate to length
+		xDest=xDest * TILE_SIZE;
+		yDest=yDest * TILE_SIZE;
+		double dX=xDest-xCurrent;
+		double dY=yDest-yCurrent;
+		double linearDistance=getLinearDistance(dX, dY);
+		/*
+		 * Calculate the angle using tangent
+		 */
+		double angularDistance=Math.atan2(dX,dY)-Math.toRadians(thetaCurrent);
+
+		System.out.println("Angle before conversion: "+angularDistance);
+		/*
+		 * If needs to turn more than 180 degree
+		 * turn the other way instead
+		 */
+		if(angularDistance>Math.PI) {
+			// the angular disance will be negaive
+			angularDistance = angularDistance-2*Math.PI;
+		}else if(angularDistance < (-Math.PI)) {
+			// if needs to turn more than -180 degree
+			angularDistance = angularDistance+2*Math.PI;
+		}
+		turnTo(angularDistance);
+		// move the linear distance possible improvement here
+		leftMotor.setAcceleration(300);
+		rightMotor.setAcceleration(300);
+		leftMotor.setSpeed(FORWARD_SPEED);
+		rightMotor.setSpeed(FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(WHEEL_RAD, linearDistance), true);
+		rightMotor.rotate(convertDistance(WHEEL_RAD, linearDistance), false);
+	}
 	
 	// define Ultrasonic sensor
 	public static SensorModes usSensor = new EV3UltrasonicSensor(SensorPort.S4); // the instance
@@ -72,7 +128,7 @@ public class Robot {
 	public static UltrasonicController usController;
 	
 	// define light sensor
-	public static EV3ColorSensor colorSensor=new EV3ColorSensor(SensorPort.S4);
+	public static EV3ColorSensor colorSensor=new EV3ColorSensor(SensorPort.S3);
 	public static SampleProvider colorProvider=colorSensor.getRedMode();
 	
 	// define textLCD
@@ -87,6 +143,14 @@ public class Robot {
 	public void clearLCD() {
 		lcd.clear();
 	}
+	
+	private static int convertDistance(double radius, double distance) {
+		return (int) ((180.0 * distance) / (Math.PI * radius));
+	}
+	
+	private static double getLinearDistance(double x,double y) {
+		  return Math.hypot(x, y);
+	  }
 	
 	
 	

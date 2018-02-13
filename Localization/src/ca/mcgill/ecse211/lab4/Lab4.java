@@ -39,38 +39,45 @@ public class Lab4 {
 			// Record choice (left or right press)
 			buttonChoice = Button.waitForAnyPress();
 		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
-
-		if (buttonChoice == Button.ID_LEFT) {
-			System.out.println("Start Falling Edge");
-			// update the robot model
-			Robot.loc=Robot.LocalizationCategory.FALLING_EDGE;		
-		} else {
-			System.out.println("Start Rising Edge");
-			// update the robot model
-			Robot.loc=Robot.LocalizationCategory.RISING_EDGE;
-		}
 		// start all threads
 		Thread odoThread = new Thread(odometer);
 		odoThread.start();
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
-		UltrasonicPoller usPoller=new UltrasonicPoller(Robot.usDistance, Robot.usData, Robot.usController);
-		usPoller.run();
+		UltrasonicLocalizer usLocal = new UltrasonicLocalizer(odometer);
+		UltrasonicPoller usPoller = new UltrasonicPoller(Robot.usDistance, Robot.usData, usLocal);
 		
-		UltrasonicLocalizer usLocal=new UltrasonicLocalizer(odometer);
-		// do something with localizer
-		usLocal.localize();
-		// beep twice when the localization finishes
-		Sound.twoBeeps();
+		// run ultrasonic thread last
+		usPoller.start();
+		if (buttonChoice == Button.ID_LEFT) {
+			System.out.println("Start Falling Edge");
+			// update the robot model
+			Robot.loc=Robot.LocalizationCategory.FALLING_EDGE;		
+			// do something with localizer
+			System.out.println("Start localization method");
+			usLocal.localize();
+			// beep twice when the localization finishes
+			Sound.twoBeeps();
+		} else {
+			System.out.println("Start Rising Edge");
+			// update the robot model
+			Robot.loc=Robot.LocalizationCategory.RISING_EDGE;
+			// do something with localizer
+			System.out.println("Start localization method");
+			usLocal.localize();
+			// beep twice when the localization finishes
+			Sound.twoBeeps();
+		}
+
 		Robot.lcd.clear();
 		Robot.lcd.drawString("Complete Ultrasonic Loc", 0, 0);
+		System.out.println("Complete Ultrasonic Loc");
+		// wait for light sensor input
 		Robot.lcd.drawString("Press any Light Loc", 0, 1);
+		buttonChoice = Button.waitForAnyPress();
+		LightLocalizer newLightLoc=new LightLocalizer(odometer);
+		newLightLoc.localize();
 		
-		// wait for button press to execute light localizer
-		LightLocalizer lightLoc=new LightLocalizer(odometer);
-		lightLoc.localize();
-		Sound.twoBeeps();
-		Robot.lcd.clear();
 		Robot.lcd.drawString("Complete Light Loc", 0, 0);
 		Robot.lcd.drawString("Finished", 0, 1);
 		
