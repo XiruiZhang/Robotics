@@ -35,7 +35,7 @@ public class UltrasonicPoller extends Thread {
   		//distance=prevDistance;
       }
       try {
-        Thread.sleep(100);
+        Thread.sleep(50);
       } catch (Exception e) {
       }
     }
