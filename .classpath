@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="Localization/src"/>
+	<classpathentry kind="src" path="Navigation/src"/>
+	<classpathentry kind="src" path="Odometry/src"/>
+	<classpathentry kind="src" path="WallFollowingLab/src"/>
+	<classpathentry kind="lib" path="Localization/Lab3.jar"/>
+	<classpathentry kind="lib" path="Navigation/Lab3.jar"/>
+	<classpathentry kind="lib" path="Odometry/Lab2.jar"/>
+	<classpathentry kind="lib" path="WallFollowingLab/WallFollowingLab.jar"/>
+	<classpathentry kind="output" path="Localization/bin"/>
+</classpath>
