@@ -1,7 +1,9 @@
 package ca.mcgill.ecse211.controller;
 
 import ca.mcgill.ecse211.odometer.*;
+import ca.mcgill.ecse211.calibration.ColorCalibrator;
 import ca.mcgill.ecse211.display.Display;
+import ca.mcgill.ecse211.lightsensor.LightSensorController;
 import ca.mcgill.ecse211.model.*;
 
 import ca.mcgill.ecse211.ultrasonic.UltrasonicPoller;
@@ -33,12 +35,11 @@ public class Lab5 {
 			Robot.lcd.drawString("Please select", 0, 3);
 			// Record choice (left or right press)
 			buttonChoice = Button.waitForAnyPress();
-		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
+		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT&&buttonChoice!=Button.ID_DOWN);
 		
 		if (buttonChoice == Button.ID_LEFT) {
-			System.out.println("Start Color test");
 			
-		} else {
+		} else if(buttonChoice==Button.ID_RIGHT) {
 			// start all threads
 			Thread odoThread = new Thread(odometer);
 			odoThread.start();
@@ -46,7 +47,6 @@ public class Lab5 {
 			odoDisplayThread.start();
 			UltrasonicLocalizer usLocal = new UltrasonicLocalizer(odometer);
 			UltrasonicPoller usPoller = new UltrasonicPoller(Robot.usDistance, Robot.usData, usLocal);
-			
 			// run ultrasonic thread last
 			usPoller.start();
 			// update the robot model
@@ -72,6 +72,24 @@ public class Lab5 {
 			
 			Robot.lcd.drawString("Finished", 0, 1);
 			
+		}else if(buttonChoice==Button.ID_DOWN){
+			// when press down, enter color data collection
+			System.out.println("Start color sensor data collection");
+			Sound.beepSequenceUp();
+			LightSensorController newCont=new LightSensorController() {
+				
+				@Override
+				public int readLightData() {
+					return 0;
+				}
+				
+				@Override
+				public void processLightData(int tb) {
+					
+				}
+			};
+			ColorCalibrator calc=new ColorCalibrator(newCont);
+			calc.start();
 		}
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);

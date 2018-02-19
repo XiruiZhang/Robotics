@@ -197,7 +197,7 @@ public class Robot {
 	
 	// define light sensor
 	public static EV3ColorSensor colorSensor=new EV3ColorSensor(SensorPort.S3);
-	public static SampleProvider colorProvider=colorSensor.getRedMode();
+	public static SampleProvider colorProvider=colorSensor.getRGBMode();
 	private static float[] color=new float[Robot.colorProvider.sampleSize()];
 	
 	/**
