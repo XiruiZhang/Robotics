@@ -36,7 +36,7 @@ public class ColorTest extends Thread {
 			lightVal[1] = color[1] * 1000.0; // get G value
 			lightVal[2] = color[2] * 1000.0; // get B value
 			// print to RSV file format up to two floating point precision
-			System.out.printf("%.2f,%.2f,%.2f,%.2f,%s\n",lightVal[0],lightVal[1],lightVal[1],DISTANCE,EXPECTED_COLOR);
+			//System.out.printf("%.2f,%.2f,%.2f,%.2f,%s\n",lightVal[0],lightVal[1],lightVal[1],DISTANCE,EXPECTED_COLOR);
 			int tb=findColor();
 			// check if there us an object in front
 			// return value only when a color block is detected
@@ -44,7 +44,7 @@ public class ColorTest extends Thread {
 			counter++;
 			try {
 				// 10hz refresh rate
-				Thread.sleep(200);
+				Thread.sleep(100);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
