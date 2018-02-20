@@ -1,10 +1,8 @@
-package ca.mcgill.ecse211.calibration;
+package ca.mcgill.ecse211.lightsensor;
 
 import ca.mcgill.ecse211.model.Robot;
 
-import ca.mcgill.ecse211.lightsensor.LightSensorController;
-
-public class ColorCalibrator extends Thread {
+public class ColorTest extends Thread {
 	// modify this to match the color of the block
 	public final String EXPECTED_COLOR="EMPTY";
 	public final double DISTANCE=0;
@@ -15,7 +13,7 @@ public class ColorCalibrator extends Thread {
 	
 	
 	// constructor here
-	public ColorCalibrator(LightSensorController cont) {
+	public ColorTest(LightSensorController cont) {
 		this.cont=cont;
 		// needs to fetch ambient light once and use it as a base for calcualtion
 		//Robot.colorProvider = Robot.colorSensor.getAmbientMode(); // the sample size should be 3
@@ -39,11 +37,10 @@ public class ColorCalibrator extends Thread {
 			lightVal[2] = color[2] * 1000.0; // get B value
 			// print to RSV file format up to two floating point precision
 			System.out.printf("%.2f,%.2f,%.2f,%.2f,%s\n",lightVal[0],lightVal[1],lightVal[1],DISTANCE,EXPECTED_COLOR);
-			
-			// check if there us an object in front
 			int tb=findColor();
+			// check if there us an object in front
+			// return value only when a color block is detected
 			cont.processLightData(tb);
-			
 			counter++;
 			try {
 				// 10hz refresh rate
@@ -54,9 +51,26 @@ public class ColorCalibrator extends Thread {
 		}
 	}
 	
+	/**
+	 * This method checks if the block is a color
+	 * @param int: color of the block
+	 */
+	public boolean isColorBlock(int tb) {
+		if(tb!=-1) {
+			return true;
+		}
+		else 
+			return false;
+	}
+	/**
+	 * This method calculates the color of the block using RGB value
+	 * @return
+	 */
 	public int findColor() {
-		// 1: Red, 2: Blue, 3: Yellow, 4: White
+		// 1: Red, 2: Blue, 3: Yellow, 4: White -99: noise 
 		int color=0;
+		//ToDO: algorithm that determines the color
+		
 		return color;
 	}
 }

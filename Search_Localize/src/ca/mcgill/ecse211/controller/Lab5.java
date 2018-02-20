@@ -1,8 +1,8 @@
 package ca.mcgill.ecse211.controller;
 
 import ca.mcgill.ecse211.odometer.*;
-import ca.mcgill.ecse211.calibration.ColorCalibrator;
 import ca.mcgill.ecse211.display.Display;
+import ca.mcgill.ecse211.lightsensor.ColorTest;
 import ca.mcgill.ecse211.lightsensor.LightSensorController;
 import ca.mcgill.ecse211.model.*;
 
@@ -32,7 +32,8 @@ public class Lab5 {
 			Robot.lcd.drawString("< Left | Right >", 0, 0);
 			Robot.lcd.drawString("L: Color test, ", 0, 1);
 			Robot.lcd.drawString("R: Search, ", 0, 2);
-			Robot.lcd.drawString("Please select", 0, 3);
+			Robot.lcd.drawString("D: Color test, ", 0, 3);
+			Robot.lcd.drawString("Please select", 0, 4);
 			// Record choice (left or right press)
 			buttonChoice = Button.waitForAnyPress();
 		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT&&buttonChoice!=Button.ID_DOWN);
@@ -85,11 +86,34 @@ public class Lab5 {
 				
 				@Override
 				public void processLightData(int tb) {
-					
+					if(tb!=-1) {
+						// the color is valid
+						Robot.lcd.clear();
+						Robot.lcd.drawString("Color detected",0, 0);
+						switch (tb) {
+						case 1:
+							Robot.lcd.drawString("Red",0, 1);
+							break;
+						case 2:
+							Robot.lcd.drawString("Blue",0, 1);
+							break;
+						case 3:
+							Robot.lcd.drawString("Yellow",0, 1);
+							break;
+						case 4:
+							Robot.lcd.drawString("White",0, 1);
+							break;
+						default:
+							break;
+						}
+					}
 				}
 			};
-			ColorCalibrator calc=new ColorCalibrator(newCont);
+			ColorTest calc=new ColorTest(newCont);
 			calc.start();
+			// exit the system on button press
+			while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+			System.exit(0);
 		}
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
