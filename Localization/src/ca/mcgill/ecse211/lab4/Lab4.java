@@ -51,7 +51,7 @@ public class Lab4 {
 			usLocal.localize();
 			// beep twice when the localization finishes
 			Sound.twoBeeps();
-		} else {
+		} else if(buttonChoice==Button.ID_RIGHT) {
 			System.out.println("Start Rising Edge");
 			// update the robot model
 			Robot.loc=Robot.LocalizationCategory.RISING_EDGE;
