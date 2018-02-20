@@ -6,8 +6,8 @@ import ca.mcgill.ecse211.lightsensor.LightSensorController;
 
 public class ColorCalibrator extends Thread {
 	// modify this to match the color of the block
-	public final String EXPECTED_COLOR="YELLOW";
-	public final double DISTANCE=3.0;
+	public final String EXPECTED_COLOR="EMPTY";
+	public final double DISTANCE=0;
 	private LightSensorController cont;
 	private static float[] color=new float[Robot.colorProvider.sampleSize()];
 	private static float[] ambientColor = new float[Robot.colorProvider.sampleSize()];
@@ -32,15 +32,18 @@ public class ColorCalibrator extends Thread {
 	public void run() {
 		double lightVal[]=new double[3];
 		int counter=0;
-		while (counter<100) {
+		while (true) {
 			Robot.colorProvider.fetchSample(color, 0); // acquire data
 			lightVal[0] = color[0] * 1000.0; // get R value
 			lightVal[1] = color[1] * 1000.0; // get G value
 			lightVal[2] = color[2] * 1000.0; // get B value
 			// print to RSV file format up to two floating point precision
 			System.out.printf("%.2f,%.2f,%.2f,%.2f,%s\n",lightVal[0],lightVal[1],lightVal[1],DISTANCE,EXPECTED_COLOR);
+			
+			// check if there us an object in front
 			int tb=findColor();
 			cont.processLightData(tb);
+			
 			counter++;
 			try {
 				// 10hz refresh rate
