@@ -22,11 +22,14 @@ The below improvements can aid robot's performance
 
  ## Wiring
  Sensors:
- Ultrasonic sensor: Sensor Port S4
- Block light sensor (forward facing): Sensor Port S3
- Floor light sensor (downward facing): Sensor Port S2
-
+ <ol>
+ <li>Ultrasonic sensor: Sensor Port S4</li>
+ <li>Block light sensor (forward facing): Sensor Port S3</li>
+ <li>Floor light sensor (downward facing): Sensor Port S2</li>
+</ol>
  Motors:
- Left motor: Motor Port C
- Right motor: Motor Port D
- Ultrasonic base motor: Motor Port A
+  <ol>
+  <li>Left motor: Motor Port C</li>
+  <li>Right motor: Motor Port D</li>
+  <li>Ultrasonic base motor: Motor Port A</li>
+  </ol>
