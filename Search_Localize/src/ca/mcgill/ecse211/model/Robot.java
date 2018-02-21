@@ -16,9 +16,17 @@ import lejos.robotics.SampleProvider;
  * 
  * @author jamestang
  * This class defines the robot as a model
- * Specify sensor methods, drive methods
- * Define feedback mechanism
- *
+ * 	Specify sensor methods, drive methods, define feedback mechanism
+ *	======== Set up =========== 
+ *	Sensors:
+ *	Ultrasonic sensor: Sensor Port S4
+ *	Block light sensor (forward facing): Sensor Port S3
+ *	Floor light sensor (downward facing): Sensor Port S2
+ *	
+ *	Motors:
+ *	Left motor: Motor Port C
+ *	Right motor: Motor Port D
+ *	Ultrasonic base motor: Motor Port A
  */
 public class Robot {
 	// basic data measurement of robot-specific data
@@ -200,6 +208,10 @@ public class Robot {
 	public static SampleProvider colorProvider=colorSensor.getRGBMode();
 	private static float[] color=new float[Robot.colorProvider.sampleSize()];
 	
+	// define floor light sensor
+	public static EV3ColorSensor floorColorSensor=new EV3ColorSensor(SensorPort.S2);
+	public static SampleProvider floorColorProvider=colorSensor.getRedMode();
+	
 	/**
 	 * This method fetch the color value from light sensor
 	 * @return float: the value of light from light sensor
@@ -210,6 +222,15 @@ public class Robot {
 		return lightVal;
 	}
 	
+	/**
+	 * This method fetch the color value from floor light sensor
+	 * @return float: the value of light from light sensor
+	 */
+	public static float getFloorColor() {
+		Robot.floorColorProvider.fetchSample(color, 0);
+		float lightVal=color[0]*1000;
+		return lightVal;
+	}
 	// define textLCD
 	public static TextLCD lcd = LocalEV3.get().getTextLCD();
 	

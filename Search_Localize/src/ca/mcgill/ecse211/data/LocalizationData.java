@@ -3,12 +3,12 @@ package ca.mcgill.ecse211.data;
 public class LocalizationData
 {
   //LocalizationData Attributes
-  private int LLx;
-  private int LLy;
-  private int URx;
-  private int URy;
-  private int TB;
-  private int SC;
+  private static int LLx;
+  private static int LLy;
+  private static int URx;
+  private static int URy;
+  private static int TB;
+  private static int SC;
   
   // empty constructor
   public LocalizationData() {
@@ -25,7 +25,18 @@ public class LocalizationData
     SC = aSC;
   }
   
-  public boolean setLLx(int aLLx)
+  public static boolean setAll(int coordinates[]) {
+	  	boolean wasSet = false;
+	    LLx=coordinates[0];
+	    LLy=coordinates[1];
+	    URx=coordinates[2];
+	    URy=coordinates[3];
+	    TB=coordinates[4];
+	    SC=coordinates[5];
+	    wasSet = true;
+	    return wasSet;
+  }
+  public static boolean setLLx(int aLLx)
   {
     boolean wasSet = false;
     LLx = aLLx;
@@ -33,7 +44,7 @@ public class LocalizationData
     return wasSet;
   }
 
-  public boolean setLLy(int aLLy)
+  public static boolean setLLy(int aLLy)
   {
     boolean wasSet = false;
     LLy = aLLy;
@@ -41,7 +52,7 @@ public class LocalizationData
     return wasSet;
   }
 
-  public boolean setURx(int aURx)
+  public static boolean setURx(int aURx)
   {
     boolean wasSet = false;
     URx = aURx;
@@ -49,7 +60,7 @@ public class LocalizationData
     return wasSet;
   }
 
-  public boolean setURy(int aURy)
+  public static boolean setURy(int aURy)
   {
     boolean wasSet = false;
     URy = aURy;
@@ -57,7 +68,7 @@ public class LocalizationData
     return wasSet;
   }
 
-  public boolean setTB(int aTB)
+  public static boolean setTB(int aTB)
   {
     boolean wasSet = false;
     TB = aTB;
@@ -65,7 +76,7 @@ public class LocalizationData
     return wasSet;
   }
 
-  public boolean setSC(int aSC)
+  public static boolean setSC(int aSC)
   {
     boolean wasSet = false;
     SC = aSC;
@@ -73,43 +84,43 @@ public class LocalizationData
     return wasSet;
   }
 
-  public int getLLx()
+  public static int getLLx()
   {
     return LLx;
   }
 
-  public int getLLy()
+  public static int getLLy()
   {
     return LLy;
   }
 
-  public int getURx()
+  public static int getURx()
   {
     return URx;
   }
 
-  public int getURy()
+  public static int getURy()
   {
     return URy;
   }
 
-  public int getTB()
+  public static int getTB()
   {
     return TB;
   }
 
-  public int getSC()
+  public static int getSC()
   {
     return SC;
   }
 
-  public void delete()
+  public static void delete()
   {}
 
 
-  public String toString()
+  public static String print()
   {
-    return super.toString() + "["+
+    return "["+
             "LLx" + ":" + getLLx()+ "," +
             "LLy" + ":" + getLLy()+ "," +
             "URx" + ":" + getURx()+ "," +

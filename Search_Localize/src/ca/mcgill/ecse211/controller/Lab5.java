@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.controller;
 
 import ca.mcgill.ecse211.odometer.*;
+import ca.mcgill.ecse211.data.LocalizationData;
 import ca.mcgill.ecse211.display.Display;
 import ca.mcgill.ecse211.lightsensor.ColorTest;
 import ca.mcgill.ecse211.lightsensor.LightSensorController;
@@ -14,7 +15,10 @@ public class Lab5 {
 
 	public static Odometer odometer;
 	public static Display odometryDisplay;
-
+	public static OdometryCorrection odometryCorrection;
+	// defines data for search area {LLx,LLy,URx,URy,TB,SC}
+	public static int coordinates[]= {4,4,6,6,1,1};
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws OdometerExceptions {
 
 		int buttonChoice;
@@ -46,10 +50,14 @@ public class Lab5 {
 			odoThread.start();
 			Thread odoDisplayThread = new Thread(odometryDisplay);
 			odoDisplayThread.start();
+			// do not start correction yet
+			Thread odocorrectionThread=new Thread(odometryCorrection);
+			
 			UltrasonicLocalizer usLocal = new UltrasonicLocalizer(odometer);
 			UltrasonicPoller usPoller = new UltrasonicPoller(Robot.usDistance, Robot.usData, usLocal);
 			// run ultrasonic thread last
 			usPoller.start();
+			
 			// update the robot model
 			Robot.loc=Robot.LocalizationCategory.FALLING_EDGE;
 			System.out.println("US localization: "+Robot.loc);
@@ -70,6 +78,33 @@ public class Lab5 {
 			Sound.twoBeeps();
 			System.out.println("Complete Light Loc");
 			// ToDo: implement search method
+			//p1: navigate to the point of the starting point
+			// setting the values
+			if(LocalizationData.setAll(coordinates)) {
+				// setting is success
+				System.out.println("Coordinate updated!"+LocalizationData.print());
+			}else {
+				// setting is failed
+				System.out.println("Coordinate update failed");
+			}
+			/**move to the starting coordinate of the search zone, use only travelTo() to avoid cross the search zone unintentionally
+			 * 	move to center of tile before going to search zone
+			 * ToDo: here we should use navigation correction to make sure the odometer is in sync with robot's actual location
+			 */
+			// we start the odometer correction thread first
+			odocorrectionThread.start();
+			System.out.println("Travel to center of tile for start");
+			Robot.travelTo(odometer.getXYT()[0],odometer.getXYT()[1], odometer.getXYT()[2],-Robot.TILE_SIZE/2, Robot.TILE_SIZE/2);
+			// move in y direction a distance of dy
+			System.out.println("Covering dy to starting point");
+			Robot.travelTo(LocalizationData.getLLy()*Robot.TILE_SIZE);
+			// turn and cover dx
+			System.out.println("Covering dx to starting point");
+			Robot.travelTo(LocalizationData.getLLx()*Robot.TILE_SIZE);
+			System.out.println("Stopping odometer correction thread");
+			// ToDo: use in thread stop machanism to stop the thread
+			odocorrectionThread.stop();
+			Sound.twoBeeps();
 			
 			Robot.lcd.drawString("Finished", 0, 1);
 			

@@ -1,4 +1,4 @@
-### Robot hardware requirement 
+# Robot hardware requirement 
 
 ## The robot must satifsfy the following functional requirements
 <ol>
@@ -8,7 +8,8 @@
 <li>Ultrasonic sensor should not exceed 10cm in height, ideally 6-9cm</li>
 <li>Ultrasonic sensor should be mounted with vertically (one cirle is on top of the other)</li>
 <li>Ultrasonic sensor should be mounted near on the center of of robot's wheel axis</li>
-<li>Light sensor is mounted forward</li>
+<li>One light sensor is mounted forward</li>
+<li>One light sensor should be mounted downward, about 1cm from floor, located on center of the axis</li>
 <li>The track length of the robot should be under 17cm</li>
 </ol>	
 
@@ -18,3 +19,14 @@ The below improvements can aid robot's performance
 <li>The robot's left and right motor should be connected with a horizontal beam for stability</li>	
 <li>The robot should use as little material as possible to reduce weight</li>
 </ol>
+
+ ## Wiring
+ Sensors:
+ Ultrasonic sensor: Sensor Port S4
+ Block light sensor (forward facing): Sensor Port S3
+ Floor light sensor (downward facing): Sensor Port S2
+
+ Motors:
+ Left motor: Motor Port C
+ Right motor: Motor Port D
+ Ultrasonic base motor: Motor Port A
