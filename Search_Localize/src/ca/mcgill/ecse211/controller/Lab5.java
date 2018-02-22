@@ -145,7 +145,7 @@ public class Lab5 {
 					}
 				}
 			};
-			ColorTest calc=new ColorTest(newCont);
+			ColorTest calc=new ColorTest(newCont,coordinates[4]);
 			calc.start();
 			// exit the system on button press
 			while (Button.waitForAnyPress() != Button.ID_ESCAPE);

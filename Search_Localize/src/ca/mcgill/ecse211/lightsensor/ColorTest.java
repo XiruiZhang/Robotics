@@ -1,19 +1,20 @@
 package ca.mcgill.ecse211.lightsensor;
 
 import ca.mcgill.ecse211.model.Robot;
+import lejos.hardware.Sound;
 
 public class ColorTest extends Thread {
 	// modify this to match the color of the block
-	public final String EXPECTED_COLOR="EMPTY";
+	//public final String EXPECTED_COLOR="EMPTY";
 	public final double DISTANCE=0;
 	private LightSensorController cont;
 	private static float[] color=new float[Robot.colorProvider.sampleSize()];
-	private static float[] ambientColor = new float[Robot.colorProvider.sampleSize()];
-	private static int[] ambientLight;
-	
+
+	private static double[] targetValue = new double [Robot.colorProvider.sampleSize()]; 
+	private static String colorName = "EMPTY";
 	
 	// constructor here
-	public ColorTest(LightSensorController cont) {
+	public ColorTest(LightSensorController cont, int targetColor) {
 		this.cont=cont;
 		// needs to fetch ambient light once and use it as a base for calcualtion
 		//Robot.colorProvider = Robot.colorSensor.getAmbientMode(); // the sample size should be 3
@@ -23,25 +24,31 @@ public class ColorTest extends Thread {
 		//System.out.println("Ambient light: "+ambientLight[0]);
 		// switch mode of colorSensor to getRGBMode()
 		//Robot.colorSensor.getRGBMode();
-		System.out.println("========Below is rsv file=======");
-		System.out.println("Red,Blue,Yellow,Distance,Actual_color");
+		// set target color
+		this.setTargetColor(targetColor);
+		//System.out.println("========Below is rsv file=======");
+		//System.out.println("Red,Blue,Yellow,Distance,Actual_color");
 	}
 	
 	public void run() {
-		double lightVal[]=new double[3];
-		int counter=0;
+
+		
+		int counter=0;  //counter?
 		while (true) {
-			Robot.colorProvider.fetchSample(color, 0); // acquire data
-			lightVal[0] = color[0] * 1000.0; // get R value
-			lightVal[1] = color[1] * 1000.0; // get G value
-			lightVal[2] = color[2] * 1000.0; // get B value
+			Robot.colorProvider.fetchSample(color, 0); // acquire data	
 			// print to RSV file format up to two floating point precision
 			//System.out.printf("%.2f,%.2f,%.2f,%.2f,%s\n",lightVal[0],lightVal[1],lightVal[1],DISTANCE,EXPECTED_COLOR);
-			int tb=findColor();
-			// check if there us an object in front
-			// return value only when a color block is detected
-			cont.processLightData(tb);
+			boolean ifFound = findColor();
+			if(ifFound == true) {
+				Sound.beep();
+				System.out.println("Color block found!");
+				System.out.println(colorName);
+				colorName="None";
+				//Robot.turn("RIGHT");
+			}
+			//cont.processLightData(tb);
 			counter++;
+			
 			try {
 				// 10hz refresh rate
 				Thread.sleep(100);
@@ -66,11 +73,56 @@ public class ColorTest extends Thread {
 	 * This method calculates the color of the block using RGB value
 	 * @return
 	 */
-	public int findColor() {
+	public boolean findColor() {
 		// 1: Red, 2: Blue, 3: Yellow, 4: White -99: noise 
-		int color=0;
-		//ToDO: algorithm that determines the color
+		boolean ifFound = false;
+		double lightVal[]=new double[3];
 		
-		return color;
+		lightVal[0] = color[0] * 1000.0; // R value
+		lightVal[1] = color[1] * 1000.0; // G value
+		lightVal[2] = color[2] * 1000.0; // B value
+		double difference = Math.sqrt(Math.pow((color[0] - targetValue[0]), 2) + Math.pow((color[1] - targetValue[1]), 2) + Math.pow((color[2] - targetValue[2]), 2));
+		
+		if(difference < 1) {
+			ifFound = true;
+		}else {
+			ifFound = false;
+		}
+
+		return ifFound;
+	}
+	/**
+	*	ToDO: add javadoc here
+	*/
+	private void setTargetColor(int targetColor){
+		switch(targetColor) {		//determine the targetBlock
+			case 1:
+				colorName = "RED";
+				targetValue[0] = 74.51;
+				targetValue[1] = 11.76;
+				targetValue[2] = 11.76;
+			break;
+			
+			case 2:
+				colorName = "BLUE";
+				targetValue[0] = 9.80;
+				targetValue[1] = 25.49;
+				targetValue[2] = 25.49;
+			break;
+			
+			case 3:
+				colorName = "YELLOW";
+				targetValue[0] = 146.08;
+				targetValue[1] = 112.75;
+				targetValue[2] = 112.75;
+			break;
+			
+			case 4:
+				colorName = "WHITE";
+				targetValue[0] = 104.90;
+				targetValue[1] = 117.65;
+				targetValue[2] = 117.65;
+			break;	
+		}
 	}
 }

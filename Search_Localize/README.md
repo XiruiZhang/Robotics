@@ -1,5 +1,11 @@
 # Robot hardware requirement 
 
+#ToDo:
+<ol>
+<li>Reinforce front wheel axis</li>
+<li>Added battery pack holder</li>
+</ol>
+
 ## The robot must satifsfy the following functional requirements
 <ol>
 <li>The left and right motors should be made from the medium motor (the red ones), it is more precise</li>	
