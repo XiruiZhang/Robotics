@@ -24,10 +24,10 @@ public class UltrasonicPoller extends Thread {
    * @see java.lang.Thread#run()
    */
   public void run() {
-    int distance;
+    double distance;
     while (true) {
       us.fetchSample(usData, 0); // acquire data
-      distance = (int) (usData[0] * 100.0);
+      distance = usData[0] * 100.0;
       if(isDistanceValid(distance)==true) {
     	  cont.processUSData(distance); 
       }
@@ -48,7 +48,7 @@ public class UltrasonicPoller extends Thread {
    * @param distance
    * @return boolean
    */
-  public boolean isDistanceValid(int distance) {
+  public boolean isDistanceValid(double distance) {
 	  if(distance==2147483647) {
 		  return true;
 	  }

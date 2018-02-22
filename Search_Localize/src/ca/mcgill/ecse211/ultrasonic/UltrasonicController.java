@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.ultrasonic;
 
 public interface UltrasonicController {
 
-  public void processUSData(int distance);
+  public void processUSData(double distance);
 
-  public int readUSDistance();
+  public double readUSDistance();
 }

@@ -1,11 +1,11 @@
 package ca.mcgill.ecse211.odometer;
 
 import ca.mcgill.ecse211.model.Robot;
+import lejos.hardware.Sound;
 
 public class OdometryCorrection implements Runnable {
   private static final long CORRECTION_PERIOD = 10;
-  private static final int BLACK_THRESHOLD=10;
-  private static float[] floorColor=new float[Robot.floorColorProvider.sampleSize()];
+  private static final int BLACK_THRESHOLD=300;
   private static double offsetOrigin; // this is how far the robot is from the (0,0) in y
   private double offset=0;
   public static boolean isRunnable=true;
@@ -23,7 +23,6 @@ public class OdometryCorrection implements Runnable {
    */
   public OdometryCorrection(double offsetOrigin) throws OdometerExceptions {
     this.odometer = Odometer.getOdometer();
-    this.offsetOrigin=offsetOrigin;
   }
 
   /**
@@ -36,14 +35,14 @@ public class OdometryCorrection implements Runnable {
     long correctionStart, correctionEnd;
       correctionStart = System.currentTimeMillis();
       // fetch color from Sample Provider thread
-      Robot.floorColorProvider.fetchSample(floorColor, 0);
-      lightVal=floorColor[0]*1000;
+      lightVal=Robot.getFloorColor();
+      System.out.println(lightVal);
       // if robot is not on the line light sensor in red mode should output value less than 10
       if(lightVal <=BLACK_THRESHOLD){
+    	  	Sound.beep();
     	  	// getting the theta value from odometer class
     	  	theta=odometer.theta;
     	  	// check the postion of the robot
-    	  	int direction=isMovingX(theta);
     	  	if((315<theta && theta<=0) || (theta>0 &&theta<45)) {
     	  		// x is incrementing
     	  		xLine++;
@@ -62,6 +61,7 @@ public class OdometryCorrection implements Runnable {
     			offset=yLine*Robot.TILE_SIZE;
     			odometer.setX(offset);
     		}
+    	  	System.out.println("Corrected");
       }
       // this ensure the odometry correction occurs only once every period
       correctionEnd = System.currentTimeMillis();

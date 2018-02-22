@@ -1,9 +1,16 @@
 # Robot hardware requirement 
 
-#ToDo:
+## Hardware ToDo:
 <ol>
 <li>Reinforce front wheel axis</li>
 <li>Added battery pack holder</li>
+</ol>
+
+## Software Issue
+<ol>
+<li>Odometer correction is not working</li>
+<li>Need to add ultrasonic distance to</li>
+<li>Color detecting has error</li>
 </ol>
 
 ## The robot must satifsfy the following functional requirements

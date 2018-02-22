@@ -17,7 +17,7 @@ public class Lab5 {
 	public static Display odometryDisplay;
 	public static OdometryCorrection odometryCorrection;
 	// defines data for search area {LLx,LLy,URx,URy,TB,SC}
-	public static int coordinates[]= {4,4,6,6,1,1};
+	public static int coordinates[]= {2,2,6,6,1,1};
 	
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws OdometerExceptions {
@@ -28,7 +28,7 @@ public class Lab5 {
 		odometer = Odometer.getOdometer(Robot.leftMotor, Robot.rightMotor, Robot.TRACK, Robot.WHEEL_RAD);
 		odometryDisplay = new Display(Robot.lcd);
 		
-		System.out.println("Console output directed to terminal");
+		//System.out.println("Console output directed to terminal");
 		
 		do {
 			// clear the display
@@ -58,7 +58,7 @@ public class Lab5 {
 			UltrasonicPoller usPoller = new UltrasonicPoller(Robot.usDistance, Robot.usData, usLocal);
 			// run ultrasonic thread last
 			usPoller.start();
-			
+			/*
 			// update the robot model
 			Robot.loc=Robot.LocalizationCategory.FALLING_EDGE;
 			System.out.println("US localization: "+Robot.loc);
@@ -77,7 +77,7 @@ public class Lab5 {
 			LightLocalizer newLightLoc=new LightLocalizer(odometer);
 			newLightLoc.localize();
 			Sound.twoBeeps();
-			System.out.println("Complete Light Loc");
+			System.out.println("Complete Light Loc");*/
 			// ToDo: implement search method
 			//p1: navigate to the point of the starting point
 			// setting the values
@@ -96,22 +96,24 @@ public class Lab5 {
 			odocorrectionThread.start();
 			System.out.println("Travel to center of tile for start");
 			Robot.travelTo(odometer.getXYT()[0],odometer.getXYT()[1], odometer.getXYT()[2],-Robot.TILE_SIZE/2, Robot.TILE_SIZE/2);
-			// move in y direction a distance of dy
+			Robot.turnTo(Math.toRadians(45));// move in y direction a distance of dy
+			System.out.println("After going to middle of tile:"+odometer.getXYT().toString());
 			System.out.println("Covering dy to starting point");
 			Robot.travelTo(LocalizationData.getLLy()*Robot.TILE_SIZE);
 			// turn and cover dx
+			Robot.turnTo(Math.toRadians(90));
 			System.out.println("Covering dx to starting point");
 			Robot.travelTo(LocalizationData.getLLx()*Robot.TILE_SIZE);
 			System.out.println("Stopping odometer correction thread");
 			// ToDo: use in thread stop machanism to stop the thread
-			odocorrectionThread.stop();
+			//odocorrectionThread.stop();
 			Sound.twoBeeps();
 			
 			Robot.lcd.drawString("Finished", 0, 1);
 			
 		}else if(buttonChoice==Button.ID_DOWN){
 			// when press down, enter color data collection
-			System.out.println("Start color sensor data collection");
+			//System.out.println("Start color sensor data collection");
 			Sound.beepSequenceUp();
 			LightSensorController newCont=new LightSensorController() {
 				
@@ -122,6 +124,7 @@ public class Lab5 {
 				
 				@Override
 				public void processLightData(int tb) {
+					/*
 					if(tb!=-1) {
 						// the color is valid
 						Robot.lcd.clear();
@@ -143,10 +146,12 @@ public class Lab5 {
 							break;
 						}
 					}
+					*/
 				}
 			};
-			ColorTest calc=new ColorTest(newCont,coordinates[4]);
-			calc.start();
+			Robot.lcd.clear();
+			ColorTest colorTest=new ColorTest(newCont);
+			colorTest.start();
 			// exit the system on button press
 			while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 			System.exit(0);

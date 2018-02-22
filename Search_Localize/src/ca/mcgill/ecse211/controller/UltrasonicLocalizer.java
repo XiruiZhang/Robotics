@@ -6,7 +6,7 @@ import ca.mcgill.ecse211.ultrasonic.UltrasonicController;
 import lejos.hardware.Sound;
 
 public class UltrasonicLocalizer implements UltrasonicController{
-	private int dist=50;
+	private double dist=50;
 	// assume of robot is placed at original, the maximum usable distance used for localizalition
 	private double maxD=30;
 	// this offset is to compensate our the stiffness robot's right wheel 
@@ -16,7 +16,7 @@ public class UltrasonicLocalizer implements UltrasonicController{
 	private double MOTOR_OFFSET=3;
 	private double lAngle=0;
 	private double rAngle=0;
-	private int xBefore=0,xAfter=0;
+	private double xBefore=0,xAfter=0;
 	
 	private Odometer odometer;
 	// this array holds all 
@@ -121,7 +121,7 @@ public class UltrasonicLocalizer implements UltrasonicController{
 	}
 	
 	@Override
-	public void processUSData(int distance) {
+	public void processUSData(double distance) {
 		// test: passed distance is normal
 		//System.out.println("Distance: "+distance);
 		this.dist=distance;
@@ -131,7 +131,7 @@ public class UltrasonicLocalizer implements UltrasonicController{
 	 * @return ultrasonic sensor reading
 	 */
 	@Override
-	public int readUSDistance() {
+	public double readUSDistance() {
 		return this.dist;
 	}
 	/**
@@ -142,7 +142,7 @@ public class UltrasonicLocalizer implements UltrasonicController{
 	public void verifyCorrection() {
 		// turn usMotor 90 degree to face west wall
 		Robot.usMotor.setSpeed(50);
-		Robot.usMotor.rotateTo(-90);
+		Robot.usMotor.rotateTo(90);
 		// get distance at this point 
 		xBefore=dist;
 		System.out.println("Dist to wall before"+dist);

@@ -19,11 +19,11 @@ public class LightLocalizer {
 		// reset odometer
 		this.odometer.setXYT(0, 0, 0);
 		System.out.println("Verify odometer reset"+odometer.getXYT().toString());
-		lightVal=Robot.getColor();
+		lightVal=Robot.getFloorColor();
 		System.out.println("Light val at beginnign"+lightVal);
 		while(lightVal>BLACK_THRESHOLD) {
 			Robot.driveForward();
-			lightVal=Robot.getColor();
+			lightVal=Robot.getFloorColor();
 		}
 		Robot.stop();
 		// beep once for update
@@ -35,14 +35,14 @@ public class LightLocalizer {
 		// revert back to original state
 		Robot.travelTo(dX);
 		// fetch sensor data again
-		lightVal=Robot.getColor();
+		lightVal=Robot.getFloorColor();
 		// turn to check the other line
 		System.out.println("Turn 90");
 		Robot.turnTo(Math.toRadians(90));
 		// we will turn counter clockwise until cross another line
 		while(lightVal>BLACK_THRESHOLD) {
 			Robot.driveForward();
-			lightVal=Robot.getColor();
+			lightVal=Robot.getFloorColor();
 		}
 		Robot.stop();
 		// beep once for update
@@ -62,7 +62,5 @@ public class LightLocalizer {
 		Robot.turnTo(Math.toRadians(270-odometer.getTheta()));
 		// reset odometer
 		odometer.setXYT(0, 0, 0);
-	}
-	
-	
+	}	
 }

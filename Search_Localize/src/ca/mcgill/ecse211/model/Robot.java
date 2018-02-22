@@ -33,8 +33,8 @@ public class Robot {
 	public static final double WHEEL_RAD = 2.2;
 	public static final double TRACK = 15.8;
 	public static final double TILE_SIZE = 30.48;
-	private static final int FORWARD_SPEED = 50;
-	private static final int ROTATE_SPEED = 50;
+	private static final int FORWARD_SPEED = 100;
+	private static final int ROTATE_SPEED = 100;
 	public static double lsOffset=2.0; // distance of light sensor to wheel axis
 	public static int usMotorAngle=0;
 	private static double OFF_CONST=1.02;
@@ -74,10 +74,10 @@ public class Robot {
 	 * This method put the robot in a fixed speed drive forward
 	 */
 	public static void driveForward() {
-		leftMotor.setSpeed(50);
-		rightMotor.setSpeed(50);
-		leftMotor.setAcceleration(50);
-		rightMotor.setAcceleration(50);
+		leftMotor.setSpeed(100);
+		rightMotor.setSpeed(100);
+		leftMotor.setAcceleration(100);
+		rightMotor.setAcceleration(100);
 		leftMotor.forward();
 		rightMotor.forward();
 	}
@@ -86,10 +86,10 @@ public class Robot {
 	 * This method put the robot in a fixed speed drive backward
 	 */
 	public static void driveBackward() {
-		leftMotor.setSpeed(50);
-		rightMotor.setSpeed(50);
-		leftMotor.setAcceleration(50);
-		rightMotor.setAcceleration(50);
+		leftMotor.setSpeed(100);
+		rightMotor.setSpeed(100);
+		leftMotor.setAcceleration(100);
+		rightMotor.setAcceleration(100);
 		leftMotor.forward();
 		rightMotor.forward();
 	}
@@ -99,10 +99,10 @@ public class Robot {
 	 * @param int direction: -1: turn left, 1: turn right
 	 */
 	public static void turn(String direction) {
-		Robot.leftMotor.setSpeed(50);
-		Robot.rightMotor.setSpeed(50);
-		Robot.leftMotor.setAcceleration(50);
-		Robot.rightMotor.setAcceleration(50);
+		Robot.leftMotor.setSpeed(100);
+		Robot.rightMotor.setSpeed(100);
+		Robot.leftMotor.setAcceleration(100);
+		Robot.rightMotor.setAcceleration(100);
 		
 		if(direction=="LEFT") {
 			Robot.leftMotor.forward();
@@ -131,8 +131,8 @@ public class Robot {
 		 * acceleration
 		 */
 		thetaDest=thetaDest/OFF_CONST;
-		leftMotor.setAcceleration(50);
-		rightMotor.setAcceleration(50);
+		leftMotor.setAcceleration(100);
+		rightMotor.setAcceleration(100);
 		leftMotor.setSpeed(ROTATE_SPEED);
 		rightMotor.setSpeed(ROTATE_SPEED);
 		thetaDest = Math.toDegrees(thetaDest);
@@ -152,8 +152,8 @@ public class Robot {
 	 */
 	public static void travelTo(double linearDistance) {
 		// move the linear distance possible improvement here
-		leftMotor.setAcceleration(50);
-		rightMotor.setAcceleration(50);
+		leftMotor.setAcceleration(100);
+		rightMotor.setAcceleration(100);
 		leftMotor.setSpeed(FORWARD_SPEED);
 		rightMotor.setSpeed(FORWARD_SPEED);
 		leftMotor.rotate(robotUtil.convertDistance(WHEEL_RAD, linearDistance), true);
@@ -189,8 +189,8 @@ public class Robot {
 		}
 		turnTo(angularDistance);
 		// move the linear distance possible improvement here
-		leftMotor.setAcceleration(50);
-		rightMotor.setAcceleration(50);
+		leftMotor.setAcceleration(100);
+		rightMotor.setAcceleration(100);
 		leftMotor.setSpeed(FORWARD_SPEED);
 		rightMotor.setSpeed(FORWARD_SPEED);
 		leftMotor.rotate(robotUtil.convertDistance(WHEEL_RAD, linearDistance), true);
@@ -203,6 +203,17 @@ public class Robot {
 	public static float[] usData = new float[usDistance.sampleSize()];
 	public static UltrasonicController usController;
 	
+	/**
+	 * This method fetch the distance value from the ultrasonic sensor
+	 * @return float: the distance from light sensor
+	 */
+	public static double getDistance() {
+		Robot.usDistance.fetchSample(usData, 0);
+		float distance=usData[0]*100;
+		return distance;
+	}
+	
+	
 	// define light sensor
 	public static EV3ColorSensor colorSensor=new EV3ColorSensor(SensorPort.S2);
 	public static SampleProvider colorProvider=colorSensor.getRGBMode();
@@ -210,10 +221,11 @@ public class Robot {
 	
 	// define floor light sensor
 	public static EV3ColorSensor floorColorSensor=new EV3ColorSensor(SensorPort.S3);
-	public static SampleProvider floorColorProvider=colorSensor.getRedMode();
+	public static SampleProvider floorColorProvider=floorColorSensor.getRedMode();
+	private static float[] floorColor=new float[Robot.floorColorProvider.sampleSize()];
 	
 	/**
-	 * This method fetch the color value from light sensor
+	 * This method fetch the color value from the forward light sensor
 	 * @return float: the value of light from light sensor
 	 */
 	public static float getColor() {
@@ -227,8 +239,8 @@ public class Robot {
 	 * @return float: the value of light from light sensor
 	 */
 	public static float getFloorColor() {
-		Robot.floorColorProvider.fetchSample(color, 0);
-		float lightVal=color[0]*1000;
+		Robot.floorColorProvider.fetchSample(floorColor, 0);
+		float lightVal=floorColor[0]*1000;
 		return lightVal;
 	}
 	// define textLCD
