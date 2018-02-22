@@ -20,13 +20,13 @@ import lejos.robotics.SampleProvider;
  *	======== Set up =========== 
  *	Sensors:
  *	Ultrasonic sensor: Sensor Port S4
- *	Block light sensor (forward facing): Sensor Port S3
- *	Floor light sensor (downward facing): Sensor Port S2
+ *	Block light sensor (forward facing): Sensor Port S2
+ *	Floor light sensor (downward facing): Sensor Port S3
  *	
  *	Motors:
- *	Left motor: Motor Port C
- *	Right motor: Motor Port D
- *	Ultrasonic base motor: Motor Port A
+ *	Left motor: Motor Port D
+ *	Right motor: Motor Port B
+ *	Ultrasonic base motor: Motor Port C
  */
 public class Robot {
 	// basic data measurement of robot-specific data
@@ -66,9 +66,9 @@ public class Robot {
 	
 	
 	// define motors
-	public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
+	public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 	public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
-	public static final EV3LargeRegulatedMotor usMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+	public static final EV3LargeRegulatedMotor usMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	
 	/**
 	 * This method put the robot in a fixed speed drive forward
@@ -204,12 +204,12 @@ public class Robot {
 	public static UltrasonicController usController;
 	
 	// define light sensor
-	public static EV3ColorSensor colorSensor=new EV3ColorSensor(SensorPort.S3);
+	public static EV3ColorSensor colorSensor=new EV3ColorSensor(SensorPort.S2);
 	public static SampleProvider colorProvider=colorSensor.getRGBMode();
 	private static float[] color=new float[Robot.colorProvider.sampleSize()];
 	
 	// define floor light sensor
-	public static EV3ColorSensor floorColorSensor=new EV3ColorSensor(SensorPort.S2);
+	public static EV3ColorSensor floorColorSensor=new EV3ColorSensor(SensorPort.S3);
 	public static SampleProvider floorColorProvider=colorSensor.getRedMode();
 	
 	/**

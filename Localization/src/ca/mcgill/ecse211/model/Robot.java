@@ -39,9 +39,9 @@ public class Robot {
 	public static LocalizationCategory loc;
 	
 	// define motors
-	public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
+	public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 	public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
-	public static final EV3LargeRegulatedMotor usMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+	public static final EV3LargeRegulatedMotor usMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	
 	/**
 	 * This method turns the robot to an angle specified by thetaDest
@@ -127,7 +127,7 @@ public class Robot {
 	public static UltrasonicController usController;
 	
 	// define light sensor
-	public static EV3ColorSensor colorSensor=new EV3ColorSensor(SensorPort.S3);
+	public static EV3ColorSensor colorSensor=new EV3ColorSensor(SensorPort.S2);
 	public static SampleProvider colorProvider=colorSensor.getRedMode();
 	
 	// define textLCD

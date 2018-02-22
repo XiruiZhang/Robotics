@@ -18,6 +18,7 @@ public class Lab5 {
 	public static OdometryCorrection odometryCorrection;
 	// defines data for search area {LLx,LLy,URx,URy,TB,SC}
 	public static int coordinates[]= {4,4,6,6,1,1};
+	
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws OdometerExceptions {
 

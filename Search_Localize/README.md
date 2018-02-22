@@ -24,12 +24,12 @@ The below improvements can aid robot's performance
  Sensors:
  <ol>
  <li>Ultrasonic sensor: Sensor Port S4</li>
- <li>Block light sensor (forward facing): Sensor Port S3</li>
- <li>Floor light sensor (downward facing): Sensor Port S2</li>
+ <li>Block light sensor (forward facing): Sensor Port S2</li>
+ <li>Floor light sensor (downward facing): Sensor Port S3</li>
 </ol>
  Motors:
   <ol>
-  <li>Left motor: Motor Port C</li>
-  <li>Right motor: Motor Port D</li>
-  <li>Ultrasonic base motor: Motor Port A</li>
+  <li>Left motor: Motor Port D</li>
+  <li>Right motor: Motor Port B</li>
+  <li>Ultrasonic base motor: Motor Port C</li>
   </ol>
