@@ -228,10 +228,9 @@ public class Robot {
 	 * This method fetch the color value from the forward light sensor
 	 * @return float: the value of light from light sensor
 	 */
-	public static float getColor() {
+	public static float[] getColor() {
 		Robot.colorProvider.fetchSample(color, 0);
-		float lightVal=color[0]*1000;
-		return lightVal;
+		return color;
 	}
 	
 	/**
